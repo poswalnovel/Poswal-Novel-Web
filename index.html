@@ -1,0 +1,4363 @@
+<!--
+================================================================================
+  POSWALNOVEL WEBSITE — DEPLOYMENT GUIDE
+================================================================================
+
+  1. FORMSPREE → formspree.io pe free account banao → form ID copy karo
+     → HTML mein "YOUR_FORMSPREE_ID" dhundo aur replace karo
+
+  2. BOOK COVERS → placehold.co URLs ko real image URLs se replace karo
+     → Cloudinary ya ImgBB pe upload karo (dono free hain)
+
+  3. AFFILIATE LINKS → BOOKS array mein affiliateLink update karo
+     → Amazon Associates (amzn.in) se real links lo
+
+  4. SOCIAL LINKS → SITE_CONFIG mein apne real profile URLs daalo
+
+  5. ADMIN PANEL → Website pe logo par 5 baar click karo → Admin Panel khulega
+     → Wahan se books add/edit/delete kar sakte ho
+
+  HOW TO DEPLOY:
+  → Netlify: netlify.com/drop → index.html drag & drop → done!
+  → GitHub Pages: repo mein push → Settings → Pages → main branch
+  → Hostinger/cPanel: public_html folder mein index.html upload karo
+  → Vercel: vercel.com → import or drag & drop
+
+================================================================================
+-->
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PoswalNovel — Where Every Page Finds Its Reader</title>
+  <meta name="description"
+    content="Honest book reviews across Urdu, Hindi and English literature. Discover your next favourite novel with PoswalNovel." />
+  <meta name="keywords"
+    content="book reviews, Urdu novels, Hindi novels, English fiction, Peer-e-Kamil, Umera Ahmed, Pakistani literature, Indian literature" />
+  <meta name="author" content="PoswalNovel" />
+  <link rel="canonical" href="https://poswalnovel.com" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://poswalnovel.com" />
+  <meta property="og:title" content="PoswalNovel — Where Every Page Finds Its Reader" />
+  <meta property="og:description"
+    content="Honest book reviews across Urdu, Hindi and English literature. No spoilers. Just pure bookish opinions." />
+  <meta property="og:image" content="https://placehold.co/1200x630/C9A9A6/2C2C2C?text=PoswalNovel" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PoswalNovel — Where Every Page Finds Its Reader" />
+  <script
+    type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"PoswalNovel","url":"https://poswalnovel.com","email":"poswalnovel@gmail.com","sameAs":["https://instagram.com/poswalnovel","https://t.me/poswalnovel","https://whatsapp.com/channel/0029Vb7KM6c6rsQzSX9zEQ3g"]}</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    /* =============================================
+       THEME SYSTEM
+       Light: [data-theme="light"] or default
+       Dark:  [data-theme="dark"] or system dark
+    ============================================= */
+    :root {
+      --cream: #F5F0E8;
+      --cream-light: #FAF7F2;
+      --cream-dark: #EDE8DF;
+      --charcoal: #2C2C2C;
+      --charcoal-light: #3d3d3d;
+      --rose: #C9A9A6;
+      --rose-light: #dcc9c7;
+      --rose-dark: #b8908c;
+      --brown: #8B6F5E;
+      --text-muted: #7a6e6a;
+      --card-bg: #ffffff;
+      --nav-bg: rgba(245, 240, 232, 0.93);
+      --shadow-sm: 0 2px 8px rgba(44, 44, 44, 0.08);
+      --shadow-md: 0 8px 32px rgba(44, 44, 44, 0.12);
+      --shadow-lg: 0 20px 60px rgba(44, 44, 44, 0.18);
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --font-h: 'Cormorant Garamond', Georgia, serif;
+      --font-b: 'Jost', sans-serif;
+    }
+
+    /* === DARK OVERRIDES (via toggle or system) === */
+    [data-theme="dark"],
+    [data-theme="auto"] body.sys-dark {
+      --cream: #1a1714;
+      --cream-light: #1f1c18;
+      --cream-dark: #2d2923;
+      --charcoal: #F5F0E8;
+      --charcoal-light: #e0d9d0;
+      --text-muted: #b8a9a0;
+      --card-bg: #252118;
+      --nav-bg: rgba(26, 23, 20, 0.93);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Dark sections — ALWAYS dark regardless of mode */
+    .dk {
+      background: #1E1C18 !important;
+    }
+
+    .dk * {
+      color: #F5F0E8;
+    }
+
+    .dk .text-muted-dk {
+      color: rgba(245, 240, 232, 0.55) !important;
+    }
+
+    .dk .text-rose-dk {
+      color: var(--rose) !important;
+    }
+
+    .dk .text-label {
+      color: rgba(245, 240, 232, 0.55) !important;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .dk a {
+      color: rgba(245, 240, 232, 0.65);
+      transition: color 0.2s;
+    }
+
+    .dk a:hover {
+      color: #F5F0E8;
+    }
+
+    /* =============================================
+       RESET & BASE
+    ============================================= */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-b);
+      background: var(--cream);
+      color: var(--charcoal);
+      line-height: 1.7;
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    button {
+      cursor: pointer;
+      font-family: var(--font-b);
+    }
+
+    input,
+    textarea,
+    select {
+      font-family: var(--font-b);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: var(--font-h);
+      line-height: 1.2;
+    }
+
+    /* =============================================
+       TYPOGRAPHY
+    ============================================= */
+    .section-label {
+      font-family: var(--font-h);
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--rose-dark);
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-sub {
+      font-size: 1rem;
+      color: var(--text-muted);
+      font-weight: 300;
+      max-width: 560px;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-header .section-sub {
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--brown);
+      font-variant: small-caps;
+    }
+
+    /* =============================================
+       LAYOUT
+    ============================================= */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 5rem 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1.6rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      transition: var(--transition);
+      border: 2px solid transparent;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--charcoal);
+      color: var(--cream);
+      border-color: var(--charcoal);
+    }
+
+    .btn-primary:hover {
+      background: var(--brown);
+      border-color: var(--brown);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--rose-dark);
+      border-color: var(--rose);
+    }
+
+    .btn-outline:hover {
+      background: var(--rose);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    .btn-rose {
+      background: var(--rose);
+      color: #fff;
+      border-color: var(--rose);
+    }
+
+    .btn-rose:hover {
+      background: var(--rose-dark);
+      border-color: var(--rose-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* =============================================
+       SCROLL REVEAL
+    ============================================= */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .reveal.vis {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-l {
+      opacity: 0;
+      transform: translateX(-28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .reveal-l.vis {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-r {
+      opacity: 0;
+      transform: translateX(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .reveal-r.vis {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* =============================================
+       NAVBAR
+    ============================================= */
+    #nav-toggle {
+      display: none;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: var(--nav-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(139, 111, 94, 0.18);
+      transition: box-shadow 0.3s, background 0.3s;
+    }
+
+    .navbar.scrolled {
+      box-shadow: 0 4px 24px rgba(44, 44, 44, 0.1);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+      padding: 0 24px;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    .nav-logo {
+      font-family: var(--font-h);
+      font-style: italic;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--charcoal);
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .nav-logo span {
+      color: var(--rose-dark);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.75rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.75rem;
+    }
+
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: color 0.2s;
+      position: relative;
+      padding-bottom: 2px;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--rose);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--charcoal);
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      background: var(--rose);
+      color: #fff !important;
+      padding: 0.42rem 1.1rem;
+      border-radius: 100px;
+      font-size: 0.78rem !important;
+      font-weight: 600 !important;
+      border: 2px solid var(--rose);
+      transition: var(--transition) !important;
+    }
+
+    .nav-cta:hover {
+      background: var(--rose-dark) !important;
+      border-color: var(--rose-dark) !important;
+    }
+
+    .nav-cta::after {
+      display: none !important;
+    }
+
+    /* Theme Toggle Button */
+    .theme-toggle {
+      background: none;
+      border: 1.5px solid var(--cream-dark);
+      border-radius: 100px;
+      width: 38px;
+      height: 22px;
+      position: relative;
+      transition: var(--transition);
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    .theme-toggle::after {
+      content: '';
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: var(--rose);
+      border-radius: 50%;
+      top: 50%;
+      left: 2px;
+      transform: translateY(-50%);
+      transition: transform 0.3s ease, background 0.3s;
+    }
+
+    [data-theme="dark"] .theme-toggle::after,
+    body.sys-dark .theme-toggle::after {
+      transform: translateY(-50%) translateX(16px);
+      background: var(--charcoal);
+    }
+
+    .theme-icon {
+      font-size: 0.85rem;
+      position: absolute;
+      top: 50%;
+      left: 4px;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--charcoal);
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    @media (max-width: 900px) {
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-links {
+        position: fixed;
+        top: 68px;
+        left: 0;
+        right: 0;
+        background: var(--nav-bg);
+        backdrop-filter: blur(12px);
+        flex-direction: column;
+        gap: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s;
+        border-bottom: 1px solid rgba(139, 111, 94, 0.15);
+      }
+
+      .nav-links.open {
+        max-height: 500px;
+        padding: 1rem 0;
+      }
+
+      .nav-links a {
+        padding: 0.75rem 24px;
+        width: 100%;
+      }
+
+      .nav-links a::after {
+        display: none;
+      }
+    }
+
+    /* =============================================
+       HERO
+    ============================================= */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding-top: 68px;
+      background: var(--cream);
+      background-image: repeating-linear-gradient(-45deg, rgba(139, 111, 94, 0.04) 0px, rgba(139, 111, 94, 0.04) 1px, transparent 1px, transparent 12px);
+    }
+
+    .hero-deco {
+      position: absolute;
+      top: 70px;
+      right: 3vw;
+      font-family: var(--font-h);
+      font-size: clamp(8rem, 18vw, 20rem);
+      color: var(--rose);
+      opacity: 0.07;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+      font-weight: 700;
+    }
+
+    .hero-content {
+      text-align: center;
+      max-width: 820px;
+      padding: 2rem 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--brown);
+      margin-bottom: 1.5rem;
+      font-variant: small-caps;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.1s;
+    }
+
+    .hero-title {
+      font-size: clamp(2.6rem, 7vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--charcoal);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.25s;
+    }
+
+    .hero-title em {
+      color: var(--rose-dark);
+      font-style: italic;
+    }
+
+    .hero-sub {
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      color: var(--text-muted);
+      font-weight: 300;
+      max-width: 560px;
+      margin: 0 auto 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.4s;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.55s;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.7s, bounce 2s ease-in-out infinite 1.5s;
+      color: var(--brown);
+      font-size: 1.5rem;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      50% {
+        transform: translateX(-50%) translateY(8px);
+      }
+    }
+
+    /* =============================================
+       STATS STRIP (always dark)
+    ============================================= */
+    .stats-strip {
+      padding: 3rem 0;
+      overflow: hidden;
+    }
+
+    .stats-inner {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .stats-inner::-webkit-scrollbar {
+      display: none;
+    }
+
+    .stat-item {
+      text-align: center;
+      flex: 0 0 auto;
+      min-width: 110px;
+    }
+
+    .stat-num {
+      font-family: var(--font-h);
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      color: var(--rose) !important;
+      line-height: 1;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: rgba(245, 240, 232, 0.65) !important;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      margin-top: 0.4rem;
+      white-space: nowrap;
+    }
+
+    .stat-icon {
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+      display: block;
+    }
+
+    .stat-div {
+      width: 1px;
+      height: 40px;
+      background: rgba(245, 240, 232, 0.12);
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 600px) {
+      .stat-div {
+        display: none;
+      }
+    }
+
+    /* =============================================
+       REVIEWS SECTION
+    ============================================= */
+    #reviews {
+      background: var(--cream-light);
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 2.5rem;
+      padding: 1.25rem;
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .genre-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      flex: 1;
+    }
+
+    .pill {
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      border: 1.5px solid var(--cream-dark);
+      background: transparent;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+
+    .pill:hover,
+    .pill.active {
+      background: var(--charcoal);
+      border-color: var(--charcoal);
+      color: var(--cream);
+    }
+
+    .filter-selects {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .filter-sel {
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--cream-dark);
+      background: var(--cream);
+      color: var(--charcoal);
+      font-size: 0.8rem;
+      font-family: var(--font-b);
+    }
+
+    /* Featured Card */
+    .feat-card {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 3rem;
+      background: #1E1C18;
+      box-shadow: var(--shadow-lg);
+      min-height: 340px;
+    }
+
+    @media (max-width: 700px) {
+      .feat-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .feat-cover {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feat-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .feat-card:hover .feat-cover img {
+      transform: scale(1.04);
+    }
+
+    .feat-body {
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .feat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--rose);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.8rem;
+      border-radius: 100px;
+      margin-bottom: 1rem;
+      width: fit-content;
+    }
+
+    .feat-title {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      color: #F5F0E8;
+      margin-bottom: 0.25rem;
+    }
+
+    .feat-author {
+      color: var(--rose-light);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .feat-excerpt {
+      color: rgba(245, 240, 232, 0.7);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .star-row {
+      display: flex;
+      gap: 0.25rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .star {
+      color: var(--rose);
+    }
+
+    .rating-num {
+      color: rgba(245, 240, 232, 0.75);
+      font-size: 0.85rem;
+      margin-left: 0.4rem;
+    }
+
+    /* Book Cards */
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .book-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .book-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-img {
+      position: relative;
+      height: 280px;
+      overflow: hidden;
+      background: var(--cream-dark);
+    }
+
+    .card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .book-card:hover .card-img img {
+      transform: scale(1.04);
+    }
+
+    .badge {
+      position: absolute;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+    }
+
+    .badge-genre {
+      top: 10px;
+      left: 10px;
+      background: rgba(30, 28, 24, 0.85);
+      color: #F5F0E8;
+    }
+
+    .badge-lang {
+      top: 10px;
+      right: 10px;
+      background: var(--rose);
+      color: #fff;
+    }
+
+    .card-body {
+      padding: 1.25rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-title {
+      font-family: var(--font-h);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+      color: var(--charcoal);
+    }
+
+    .card-author {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .card-stars {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.85rem;
+    }
+
+    .card-excerpt {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex: 1;
+      margin-bottom: 1rem;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: auto;
+      flex-wrap: wrap;
+    }
+
+    .card-actions .btn {
+      flex: 1;
+      justify-content: center;
+      padding: 0.5rem 0.5rem;
+      font-size: 0.75rem;
+      min-width: 0;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-muted);
+      grid-column: 1/-1;
+    }
+
+    /* =============================================
+       SHARE DROPDOWN
+    ============================================= */
+    .share-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .share-drop {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      padding: 0.5rem;
+      min-width: 180px;
+      z-index: 500;
+      display: none;
+      border: 1px solid var(--cream-dark);
+    }
+
+    .share-drop.open {
+      display: block;
+      animation: dropIn 0.2s ease;
+    }
+
+    @keyframes dropIn {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    .share-drop a,
+    .share-drop button {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--charcoal);
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .share-drop a:hover,
+    .share-drop button:hover {
+      background: var(--cream-dark);
+    }
+
+    .share-drop::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 10px;
+      height: 10px;
+      background: var(--card-bg);
+      border-right: 1px solid var(--cream-dark);
+      border-bottom: 1px solid var(--cream-dark);
+      transform: translateX(-50%) rotate(45deg);
+    }
+
+    /* =============================================
+       MODAL
+    ============================================= */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 18, 15, 0.88);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      max-width: 720px;
+      width: 100%;
+      max-height: 90vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transform: scale(0.95) translateY(10px);
+      transition: transform 0.3s ease;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-overlay.open .modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-hd {
+      display: flex;
+      gap: 1.5rem;
+      padding: 1.75rem;
+      border-bottom: 1px solid var(--cream-dark);
+      position: relative;
+    }
+
+    .modal-cover {
+      width: 100px;
+      height: 140px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+      box-shadow: var(--shadow-md);
+    }
+
+    .modal-meta {
+      flex: 1;
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      color: var(--charcoal);
+    }
+
+    .modal-author {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .modal-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+
+    .modal-tag {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      background: var(--cream-dark);
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .modal-info-row {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: var(--cream-dark);
+      color: var(--charcoal);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .modal-close:hover {
+      background: var(--rose);
+      color: white;
+    }
+
+    .modal-body {
+      overflow-y: auto;
+      padding: 1.75rem;
+      flex: 1;
+    }
+
+    .rating-breakdown h4 {
+      font-family: var(--font-h);
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--charcoal);
+    }
+
+    .rating-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .rr-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      width: 130px;
+      flex-shrink: 0;
+    }
+
+    .rr-bar {
+      flex: 1;
+      height: 6px;
+      background: var(--cream-dark);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .rr-fill {
+      height: 100%;
+      background: var(--rose);
+      border-radius: 3px;
+    }
+
+    .rr-val {
+      font-size: 0.78rem;
+      color: var(--rose-dark);
+      font-weight: 600;
+      width: 28px;
+    }
+
+    .modal-review {
+      font-size: 0.92rem;
+      line-height: 1.85;
+      color: var(--charcoal);
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-review p {
+      margin-bottom: 1rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .modal-actions .btn {
+      flex: 1;
+      justify-content: center;
+      min-width: 140px;
+    }
+
+    /* =============================================
+       BOOKSHELF
+    ============================================= */
+    #bookshelf {
+      background: var(--cream);
+    }
+
+    .disc-banner {
+      background: rgba(201, 169, 166, 0.1);
+      border: 1px solid rgba(201, 169, 166, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .shelf-filter {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .shelf-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .shelf-item {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .shelf-item:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .shelf-img {
+      height: 220px;
+      overflow: hidden;
+      background: var(--cream-dark);
+    }
+
+    .shelf-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .shelf-item:hover .shelf-img img {
+      transform: scale(1.05);
+    }
+
+    .shelf-body {
+      padding: 1rem;
+    }
+
+    .shelf-title {
+      font-family: var(--font-h);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+      color: var(--charcoal);
+    }
+
+    .shelf-auth {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .shelf-price {
+      font-size: 0.85rem;
+      color: var(--rose-dark);
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .shelf-body .btn {
+      width: 100%;
+      justify-content: center;
+      font-size: 0.78rem;
+      padding: 0.5rem;
+    }
+
+    /* =============================================
+       FEEDBACK
+    ============================================= */
+    #feedback {
+      background: var(--cream-light);
+    }
+
+    .feedback-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    @media (max-width: 768px) {
+      .feedback-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .rating-widget {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .star-sel {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .star-btn {
+      font-size: 2rem;
+      background: none;
+      border: none;
+      color: var(--cream-dark);
+      cursor: pointer;
+      transition: color 0.2s, transform 0.15s;
+      line-height: 1;
+    }
+
+    .star-btn:hover,
+    .star-btn.active {
+      color: var(--rose);
+      transform: scale(1.15);
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--charcoal);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-input,
+    .form-sel,
+    .form-ta {
+      width: 100%;
+      padding: 0.6rem 0.9rem;
+      border: 1.5px solid var(--cream-dark);
+      border-radius: var(--radius-sm);
+      background: var(--cream);
+      color: var(--charcoal);
+      font-size: 0.875rem;
+      font-family: var(--font-b);
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus,
+    .form-sel:focus,
+    .form-ta:focus {
+      outline: none;
+      border-color: var(--rose);
+    }
+
+    .char-cnt {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: right;
+      margin-top: 0.25rem;
+    }
+
+    .agg-score {
+      text-align: center;
+      padding: 1.5rem;
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 2rem;
+    }
+
+    .agg-big {
+      font-family: var(--font-h);
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--rose-dark);
+      line-height: 1;
+    }
+
+    .agg-lbl {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    .bar-chart {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 2rem;
+    }
+
+    .bar-chart h4 {
+      font-family: var(--font-h);
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      color: var(--charcoal);
+    }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .bar-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    .bar-wrap {
+      flex: 1;
+      height: 8px;
+      background: var(--cream-dark);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: var(--rose);
+      border-radius: 4px;
+      width: 0;
+      transition: width 1s ease;
+    }
+
+    .bar-pct {
+      font-size: 0.78rem;
+      color: var(--rose-dark);
+      font-weight: 600;
+      width: 34px;
+    }
+
+    .feedbacks-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .fb-item {
+      background: var(--card-bg);
+      border-radius: var(--radius-sm);
+      padding: 0.9rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .fb-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.4rem;
+    }
+
+    .fb-name {
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: var(--charcoal);
+    }
+
+    .fb-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .fb-stars {
+      color: var(--rose);
+      font-size: 0.85rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .fb-comment {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .success-msg {
+      background: #d4edda;
+      color: #155724;
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .success-msg.show {
+      display: block;
+    }
+
+    /* =============================================
+       ABOUT
+    ============================================= */
+    #about {
+      background: var(--cream);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    @media (max-width: 768px) {
+      .about-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+
+    .about-img-wrap {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .about-blob {
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      background: var(--rose-light);
+      opacity: 0.25;
+      border-radius: 60% 40% 70% 30%/50% 60% 40% 70%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      animation: blobPulse 6s ease-in-out infinite;
+    }
+
+    @keyframes blobPulse {
+
+      0%,
+      100% {
+        border-radius: 60% 40% 70% 30%/50% 60% 40% 70%;
+      }
+
+      50% {
+        border-radius: 40% 60% 30% 70%/60% 40% 70% 30%;
+      }
+    }
+
+    .about-avatar {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--brown);
+      box-shadow: 0 0 0 10px rgba(139, 111, 94, 0.12);
+      position: relative;
+      z-index: 1;
+    }
+
+    .about-text .section-title {
+      text-align: left;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .about-text .section-title {
+        text-align: center;
+      }
+    }
+
+    .about-text p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+      line-height: 1.8;
+    }
+
+    .about-list {
+      margin-bottom: 2rem;
+    }
+
+    .about-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      font-size: 0.9rem;
+      color: var(--charcoal);
+      border-bottom: 1px solid var(--cream-dark);
+    }
+
+    .about-list li:last-child {
+      border-bottom: none;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+      .social-links {
+        justify-content: center;
+      }
+    }
+
+    .social-link {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.45rem 0.9rem;
+      border-radius: 100px;
+      border: 1.5px solid var(--rose);
+      color: var(--rose-dark);
+      font-size: 0.78rem;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .social-link:hover {
+      background: var(--rose);
+      color: white;
+      border-color: var(--rose);
+    }
+
+    /* =============================================
+       CONTACT
+    ============================================= */
+    #contact {
+      background: var(--cream-light);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 3rem;
+    }
+
+    @media (max-width: 768px) {
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .contact-info h3 {
+      font-family: var(--font-h);
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      color: var(--charcoal);
+    }
+
+    .c-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .c-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .c-item a {
+      color: var(--charcoal);
+      transition: color 0.2s;
+    }
+
+    .c-item a:hover {
+      color: var(--rose-dark);
+    }
+
+    .c-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .collab-list {
+      margin-top: 1.5rem;
+    }
+
+    .collab-list h4 {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .collab-list ul {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .collab-list li {
+      font-size: 0.875rem;
+      color: var(--charcoal);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .collab-list li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--rose);
+      flex-shrink: 0;
+    }
+
+    .contact-form {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .cb-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .cb-wrap input[type=checkbox] {
+      margin-top: 3px;
+      accent-color: var(--rose);
+    }
+
+    .cb-wrap label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .form-err {
+      color: #dc3545;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+
+    .form-err.show {
+      display: block;
+    }
+
+    .alert {
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .alert-ok {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .alert-err {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .form-input.invalid,
+    .form-sel.invalid,
+    .form-ta.invalid {
+      border-color: #dc3545;
+    }
+
+    .form-input.valid,
+    .form-sel.valid,
+    .form-ta.valid {
+      border-color: #28a745;
+    }
+
+    /* =============================================
+       FOOTER (always dark)
+    ============================================= */
+    .footer {
+      background: #1E1C18;
+      padding: 3.5rem 0 0;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 3rem;
+      padding-bottom: 2.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+
+    .footer-logo {
+      font-family: var(--font-h);
+      font-style: italic;
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #F5F0E8;
+      letter-spacing: 0.02em;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-logo span {
+      color: var(--rose);
+    }
+
+    .footer-tagline {
+      font-family: var(--font-h);
+      font-style: italic;
+      color: rgba(245, 240, 232, 0.4);
+      font-size: 0.9rem;
+    }
+
+    .footer-desc {
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      color: rgba(245, 240, 232, 0.5);
+      line-height: 1.7;
+      max-width: 260px;
+    }
+
+    .footer-col h5 {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--rose);
+      margin-bottom: 1rem;
+    }
+
+    .footer-col ul {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .footer-col ul li a {
+      font-size: 0.85rem;
+      color: rgba(245, 240, 232, 0.6);
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .footer-col ul li a:hover {
+      color: #F5F0E8;
+    }
+
+    .footer-div {
+      border: none;
+      border-top: 1px solid rgba(139, 111, 94, 0.2);
+      margin: 0;
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 0;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .footer-bottom span {
+      font-size: 0.78rem;
+      color: rgba(245, 240, 232, 0.4);
+    }
+
+    /* =============================================
+       ADMIN PANEL
+    ============================================= */
+    .admin-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 18, 15, 0.92);
+      backdrop-filter: blur(10px);
+      z-index: 3000;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+
+    .admin-overlay.open {
+      display: flex;
+    }
+
+    .admin-panel {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 900px;
+      margin: 2rem auto;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .admin-hd {
+      background: #1E1C18;
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .admin-hd h2 {
+      font-family: var(--font-h);
+      color: #F5F0E8;
+      font-size: 1.5rem;
+    }
+
+    .admin-hd span {
+      color: rgba(245, 240, 232, 0.5);
+      font-size: 0.8rem;
+    }
+
+    .admin-body {
+      padding: 2rem;
+    }
+
+    .admin-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--cream-dark);
+      padding-bottom: 0;
+    }
+
+    .admin-tab {
+      padding: 0.6rem 1.2rem;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      transition: var(--transition);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+
+    .admin-tab.active {
+      color: var(--rose-dark);
+      border-bottom-color: var(--rose);
+      background: var(--cream-light);
+    }
+
+    .admin-tab-content {
+      display: none;
+    }
+
+    .admin-tab-content.active {
+      display: block;
+    }
+
+    .admin-books-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-height: 350px;
+      overflow-y: auto;
+      margin-bottom: 1.5rem;
+    }
+
+    .admin-book-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem;
+      background: var(--cream-light);
+      border-radius: var(--radius-sm);
+    }
+
+    .admin-book-img {
+      width: 40px;
+      height: 55px;
+      object-fit: cover;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .admin-book-info {
+      flex: 1;
+    }
+
+    .admin-book-info strong {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--charcoal);
+    }
+
+    .admin-book-info span {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .admin-book-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-sm {
+      padding: 0.3rem 0.75rem;
+      font-size: 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid;
+      transition: var(--transition);
+    }
+
+    .btn-edit {
+      border-color: var(--brown);
+      color: var(--brown);
+      background: none;
+    }
+
+    .btn-edit:hover {
+      background: var(--brown);
+      color: #fff;
+    }
+
+    .btn-delete {
+      border-color: #dc3545;
+      color: #dc3545;
+      background: none;
+    }
+
+    .btn-delete:hover {
+      background: #dc3545;
+      color: #fff;
+    }
+
+    .admin-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .admin-form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .admin-form-group {
+      margin-bottom: 0.75rem;
+    }
+
+    .admin-form-group label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 0.3rem;
+    }
+
+    .admin-input,
+    .admin-ta,
+    .admin-sel {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1.5px solid var(--cream-dark);
+      border-radius: var(--radius-sm);
+      background: var(--cream);
+      color: var(--charcoal);
+      font-size: 0.82rem;
+      font-family: var(--font-b);
+    }
+
+    .admin-input:focus,
+    .admin-ta:focus,
+    .admin-sel:focus {
+      outline: none;
+      border-color: var(--rose);
+    }
+
+    .admin-ta {
+      resize: vertical;
+    }
+
+    .admin-section-title {
+      font-family: var(--font-h);
+      font-size: 1.1rem;
+      color: var(--charcoal);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--cream-dark);
+    }
+
+    .admin-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .admin-stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .export-box {
+      background: var(--cream-light);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .export-box h4 {
+      font-family: var(--font-h);
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+      color: var(--charcoal);
+    }
+
+    .export-box p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .admin-notice {
+      background: rgba(201, 169, 166, 0.15);
+      border: 1px solid rgba(201, 169, 166, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    /* =============================================
+       RESPONSIVE
+    ============================================= */
+    @media (max-width: 480px) {
+      section {
+        padding: 3.5rem 0;
+      }
+
+      .hero-btns {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .filter-selects {
+        width: 100%;
+      }
+
+      .filter-sel {
+        flex: 1;
+      }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* =============================================
+       AUTH MODAL (Login / Register)
+    ============================================= */
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 18, 15, 0.88);
+      backdrop-filter: blur(10px);
+      z-index: 4000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .auth-overlay.open {
+      display: flex;
+    }
+
+    .auth-box {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .auth-hd {
+      background: #1E1C18;
+      padding: 1.75rem 2rem 1.5rem;
+      text-align: center;
+    }
+
+    .auth-logo {
+      font-family: var(--font-h);
+      font-style: italic;
+      font-size: 1.6rem;
+      color: #F5F0E8;
+      letter-spacing: 0.02em;
+      margin-bottom: 0.25rem;
+    }
+
+    .auth-logo span {
+      color: var(--rose);
+    }
+
+    .auth-hd p {
+      font-size: 0.82rem;
+      color: rgba(245, 240, 232, 0.5);
+    }
+
+    .auth-tabs-wrap {
+      display: flex;
+      border-bottom: 1px solid var(--cream-dark);
+    }
+
+    .auth-tab-btn {
+      flex: 1;
+      padding: 0.9rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: var(--transition);
+      font-family: var(--font-b);
+    }
+
+    .auth-tab-btn.active {
+      color: var(--rose-dark);
+      border-bottom-color: var(--rose);
+      background: rgba(201, 169, 166, 0.06);
+    }
+
+    .auth-body {
+      padding: 1.75rem 2rem 2rem;
+    }
+
+    .auth-tab-content {
+      display: none;
+    }
+
+    .auth-tab-content.active {
+      display: block;
+    }
+
+    .auth-form-group {
+      margin-bottom: 1rem;
+    }
+
+    .auth-form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 0.35rem;
+    }
+
+    .auth-input {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      border: 1.5px solid var(--cream-dark);
+      border-radius: var(--radius-sm);
+      background: var(--cream);
+      color: var(--charcoal);
+      font-size: 0.875rem;
+      font-family: var(--font-b);
+      transition: border-color 0.2s;
+    }
+
+    .auth-input:focus {
+      outline: none;
+      border-color: var(--rose);
+    }
+
+    .auth-input.invalid {
+      border-color: #dc3545;
+    }
+
+    .auth-submit {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: var(--radius-sm);
+      background: var(--charcoal);
+      color: var(--cream);
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-b);
+      transition: var(--transition);
+      margin-top: 0.5rem;
+    }
+
+    .auth-submit:hover {
+      background: var(--brown);
+      transform: translateY(-1px);
+    }
+
+    .auth-err {
+      background: #f8d7da;
+      color: #721c24;
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 0.9rem;
+      font-size: 0.8rem;
+      margin-top: 0.75rem;
+      display: none;
+    }
+
+    .auth-err.show {
+      display: block;
+    }
+
+    .auth-ok {
+      background: #d4edda;
+      color: #155724;
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 0.9rem;
+      font-size: 0.8rem;
+      margin-top: 0.75rem;
+      display: none;
+    }
+
+    .auth-ok.show {
+      display: block;
+    }
+
+    .auth-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(245, 240, 232, 0.15);
+      border: none;
+      color: #F5F0E8;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .auth-close:hover {
+      background: rgba(245, 240, 232, 0.3);
+    }
+
+    .auth-divider {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin: 0.75rem 0;
+      position: relative;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 38%;
+      height: 1px;
+      background: var(--cream-dark);
+    }
+
+    .auth-divider::before {
+      left: 0;
+    }
+
+    .auth-divider::after {
+      right: 0;
+    }
+
+    .auth-admin-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--cream-dark);
+    }
+
+    .auth-admin-hint a {
+      color: var(--rose-dark);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* Navbar user badge */
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-user-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--cream-dark);
+      border: 1.5px solid var(--cream-dark);
+      border-radius: 100px;
+      padding: 0.3rem 0.85rem 0.3rem 0.4rem;
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font-b);
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--charcoal);
+    }
+
+    .nav-user-btn:hover {
+      border-color: var(--rose);
+    }
+
+    .nav-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--rose);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .nav-login-btn {
+      background: none;
+      border: 1.5px solid var(--rose);
+      border-radius: 100px;
+      padding: 0.35rem 1rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--rose-dark);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font-b);
+    }
+
+    .nav-login-btn:hover {
+      background: var(--rose);
+      color: #fff;
+    }
+
+    .nav-admin-btn {
+      background: var(--charcoal);
+      border: none;
+      border-radius: 100px;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--cream);
+      cursor: pointer;
+      transition: var(--transition);
+      font-family: var(--font-b);
+    }
+
+    .nav-admin-btn:hover {
+      background: var(--brown);
+    }
+
+    .user-dropdown {
+      position: relative;
+    }
+
+    .user-drop-menu {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 0.5rem);
+      background: var(--card-bg);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--cream-dark);
+      min-width: 160px;
+      z-index: 2000;
+      display: none;
+      overflow: hidden;
+    }
+
+    .user-drop-menu.open {
+      display: block;
+    }
+
+    .user-drop-item {
+      padding: 0.65rem 1rem;
+      font-size: 0.82rem;
+      color: var(--charcoal);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: background 0.15s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: var(--font-b);
+    }
+
+    .user-drop-item:hover {
+      background: var(--cream-light);
+    }
+
+    .user-drop-item.danger {
+      color: #dc3545;
+    }
+
+    .user-drop-divider {
+      height: 1px;
+      background: var(--cream-dark);
+      margin: 0.25rem 0;
+    }
+
+    /* Admin notice update */
+    .admin-notice {
+      background: rgba(201, 169, 166, 0.15);
+      border: 1px solid rgba(201, 169, 166, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============================================================
+     AUTH MODAL
+============================================================ -->
+  <div class="auth-overlay" id="auth-overlay" role="dialog" aria-modal="true" aria-label="Login or Register">
+    <div class="auth-box">
+      <button class="auth-close" id="auth-close" aria-label="Close">✕</button>
+      <div class="auth-hd">
+        <div class="auth-logo">Poswal<span>Novel</span></div>
+        <p>Sign in to your account or create one</p>
+      </div>
+      <div class="auth-tabs-wrap">
+        <button class="auth-tab-btn active" data-auth-tab="login">Login</button>
+        <button class="auth-tab-btn" data-auth-tab="register">Register</button>
+      </div>
+      <div class="auth-body">
+        <!-- LOGIN TAB -->
+        <div class="auth-tab-content active" id="auth-tab-login">
+          <div class="auth-form-group">
+            <label for="li-email">Email Address</label>
+            <input class="auth-input" type="email" id="li-email" placeholder="you@example.com" autocomplete="email" />
+          </div>
+          <div class="auth-form-group">
+            <label for="li-pass">Password</label>
+            <input class="auth-input" type="password" id="li-pass" placeholder="Your password"
+              autocomplete="current-password" />
+          </div>
+          <button class="auth-submit" id="btn-login">Sign In →</button>
+          <div class="auth-err" id="login-err"></div>
+          <div class="auth-divider">or</div>
+          <div class="auth-admin-hint">
+            Are you the admin? <a onclick="fillAdminHint()">Use admin credentials</a>
+          </div>
+        </div>
+        <!-- REGISTER TAB -->
+        <div class="auth-tab-content" id="auth-tab-register">
+          <div class="auth-form-group">
+            <label for="rg-name">Full Name</label>
+            <input class="auth-input" type="text" id="rg-name" placeholder="Your name" autocomplete="name" />
+          </div>
+          <div class="auth-form-group">
+            <label for="rg-email">Email Address</label>
+            <input class="auth-input" type="email" id="rg-email" placeholder="you@example.com" autocomplete="email" />
+          </div>
+          <div class="auth-form-group">
+            <label for="rg-phone">Phone Number</label>
+            <input class="auth-input" type="tel" id="rg-phone" placeholder="+91 98765 43210" autocomplete="tel" />
+          </div>
+          <div class="auth-form-group">
+            <label for="rg-pass">Password (min 6 characters)</label>
+            <input class="auth-input" type="password" id="rg-pass" placeholder="Create a password"
+              autocomplete="new-password" />
+          </div>
+          <button class="auth-submit" id="btn-register">Create Account →</button>
+          <div class="auth-err" id="register-err"></div>
+          <div class="auth-ok" id="register-ok">Account created! You are now logged in. 🎉</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+     NAVBAR
+============================================================ -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" id="nav-logo" href="#" aria-label="PoswalNovel home">Poswal<span>Novel</span></a>
+      <div class="nav-right">
+        <ul class="nav-links" id="nav-links" role="list">
+          <li><a href="#home" class="active" aria-current="page">Home</a></li>
+          <li><a href="#reviews">Reviews</a></li>
+          <li><a href="#bookshelf">Bookshelf</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="https://instagram.com/poswalnovel" target="_blank" rel="noopener noreferrer" class="nav-cta"
+              aria-label="Follow PoswalNovel on Instagram">Follow on Instagram</a></li>
+        </ul>
+        <!-- Auth area in navbar -->
+        <div class="nav-user" id="nav-auth-area">
+          <!-- Shown when logged out -->
+          <button class="nav-login-btn" id="nav-login-btn" onclick="openAuth()"
+            aria-label="Login or Register">Login</button>
+          <!-- Shown when logged in (hidden by default) -->
+          <div class="user-dropdown" id="nav-user-dropdown" style="display:none;">
+            <button class="nav-user-btn" id="nav-user-btn" aria-label="User menu" aria-expanded="false">
+              <div class="nav-avatar" id="nav-avatar">U</div>
+              <span id="nav-username">User</span>
+            </button>
+            <div class="user-drop-menu" id="user-drop-menu">
+              <div class="user-drop-item" id="drop-admin-btn" style="display:none;" onclick="openAdmin()">⚙️ Admin Panel
+              </div>
+              <div class="user-drop-divider" id="drop-admin-divider" style="display:none;"></div>
+              <div class="user-drop-item danger" onclick="logoutUser()">🚪 Logout</div>
+            </div>
+          </div>
+        </div>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode"
+          title="Toggle dark/light mode"></button>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+     HERO
+============================================================ -->
+  <section class="hero" id="home" aria-label="Hero">
+    <div class="hero-deco" aria-hidden="true">"</div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Est. 2026 — Literary Reviews</p>
+      <h1 class="hero-title">Where Every Page<br><em>Finds Its Reader</em></h1>
+      <p class="hero-sub">Book reviews, novel recommendations &amp; literary discoveries across Urdu, Hindi and English
+        literature — for readers everywhere.</p>
+      <div class="hero-btns">
+        <a href="#reviews" class="btn btn-primary">Explore Reviews</a>
+        <a href="https://instagram.com/poswalnovel" target="_blank" rel="noopener noreferrer"
+          class="btn btn-outline">Follow on Instagram ↗</a>
+      </div>
+    </div>
+    <div class="hero-scroll" aria-hidden="true">↓</div>
+  </section>
+
+  <!-- ============================================================
+     STATS STRIP (always dark)
+============================================================ -->
+  <div class="stats-strip dk" aria-label="Brand statistics">
+    <div class="stats-inner">
+      <div class="stat-item reveal">
+        <span class="stat-icon">📚</span>
+        <span class="stat-num" data-key="reviews">47+</span>
+        <span class="stat-label">Total Reviews</span>
+      </div>
+      <div class="stat-div" aria-hidden="true"></div>
+      <div class="stat-item reveal">
+        <span class="stat-icon">👥</span>
+        <span class="stat-num" data-key="followers">12K+</span>
+        <span class="stat-label">Instagram Followers</span>
+      </div>
+      <div class="stat-div" aria-hidden="true"></div>
+      <div class="stat-item reveal">
+        <span class="stat-icon">🌍</span>
+        <span class="stat-num" data-key="countries">15+</span>
+        <span class="stat-label">Countries Reading</span>
+      </div>
+      <div class="stat-div" aria-hidden="true"></div>
+      <div class="stat-item reveal">
+        <span class="stat-icon">📖</span>
+        <span class="stat-num" data-key="genres">8</span>
+        <span class="stat-label">Genres Covered</span>
+      </div>
+      <div class="stat-div" aria-hidden="true"></div>
+      <div class="stat-item reveal">
+        <span class="stat-icon">⭐</span>
+        <span class="stat-num" data-key="avgRating">4.2</span>
+        <span class="stat-label">Avg Rating Given</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+     REVIEWS
+============================================================ -->
+  <section id="reviews" aria-labelledby="reviews-h">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-label">— Our Reviews —</p>
+        <h2 class="section-title" id="reviews-h">Books We've Lived Through</h2>
+        <p class="section-sub">Honest reviews. No spoilers. Just pure bookish opinions.</p>
+      </div>
+      <div class="filter-bar reveal" role="search" aria-label="Filter book reviews">
+        <div class="genre-pills" role="group" aria-label="Filter by genre">
+          <button class="pill active" data-genre="All" aria-pressed="true">All</button>
+          <button class="pill" data-genre="Romance" aria-pressed="false">Romance</button>
+          <button class="pill" data-genre="Urdu Fiction" aria-pressed="false">Urdu Fiction</button>
+          <button class="pill" data-genre="Hindi Fiction" aria-pressed="false">Hindi Fiction</button>
+          <button class="pill" data-genre="English Fiction" aria-pressed="false">English Fiction</button>
+          <button class="pill" data-genre="Thriller" aria-pressed="false">Thriller</button>
+          <button class="pill" data-genre="Fantasy" aria-pressed="false">Fantasy</button>
+          <button class="pill" data-genre="Classic" aria-pressed="false">Classic</button>
+        </div>
+        <div class="filter-selects">
+          <select class="filter-sel" id="lang-filter" aria-label="Filter by language">
+            <option value="All">All Languages</option>
+            <option value="Urdu">Urdu</option>
+            <option value="Hindi">Hindi</option>
+            <option value="English">English</option>
+          </select>
+          <select class="filter-sel" id="sort-filter" aria-label="Sort by">
+            <option value="latest">Latest</option>
+            <option value="highest">Highest Rated</option>
+          </select>
+        </div>
+      </div>
+      <div id="featured-container" class="reveal"></div>
+      <div id="books-grid" class="books-grid" role="list" aria-label="Book reviews"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+     BOOKSHELF
+============================================================ -->
+  <section id="bookshelf" aria-labelledby="shelf-h">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-label">— Curated Picks —</p>
+        <h2 class="section-title" id="shelf-h">Books We Recommend</h2>
+        <p class="section-sub">Every link supports PoswalNovel — at no extra cost to you.</p>
+      </div>
+      <div class="disc-banner reveal" role="note">
+        <span>⚠️</span>
+        <span>This page contains affiliate links. Purchasing through our links helps us keep reviewing — at absolutely
+          no extra cost to you.</span>
+      </div>
+      <div class="shelf-filter reveal" role="group" aria-label="Filter bookshelf">
+        <button class="pill active" data-shelf="All" aria-pressed="true">All</button>
+        <button class="pill" data-shelf="Urdu" aria-pressed="false">Urdu</button>
+        <button class="pill" data-shelf="Hindi" aria-pressed="false">Hindi</button>
+        <button class="pill" data-shelf="English" aria-pressed="false">English</button>
+        <button class="pill" data-shelf="under300" aria-pressed="false">Under ₹300</button>
+      </div>
+      <div id="shelf-grid" class="shelf-grid"></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+     FEEDBACK
+============================================================ -->
+  <section id="feedback" aria-labelledby="fb-h">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-label">— Community —</p>
+        <h2 class="section-title" id="fb-h">Rate Our Reviews</h2>
+        <p class="section-sub">Your feedback helps us recommend better books.</p>
+      </div>
+      <div class="feedback-grid">
+        <div class="reveal">
+          <div class="rating-widget">
+            <h3 style="font-family:var(--font-h);font-size:1.25rem;margin-bottom:0.4rem;color:var(--charcoal)">Leave a
+              Rating</h3>
+            <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.25rem">How would you rate our reviews?
+            </p>
+            <div class="star-sel" role="group" aria-label="Select star rating">
+              <button class="star-btn" data-r="1" aria-label="1 star">★</button>
+              <button class="star-btn" data-r="2" aria-label="2 stars">★</button>
+              <button class="star-btn" data-r="3" aria-label="3 stars">★</button>
+              <button class="star-btn" data-r="4" aria-label="4 stars">★</button>
+              <button class="star-btn" data-r="5" aria-label="5 stars">★</button>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="rev-sel">Which review are you rating?</label>
+              <select class="form-sel" id="rev-sel">
+                <option value="">— Select a book —</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fb-name">Your Name (optional)</label>
+              <input type="text" class="form-input" id="fb-name" placeholder="e.g. Ayesha from Lahore" maxlength="50" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fb-comment">Tell us what you think (optional)</label>
+              <textarea class="form-ta" id="fb-comment" rows="3" placeholder="Your thoughts..." maxlength="300"
+                style="resize:vertical;"></textarea>
+              <div class="char-cnt"><span id="char-cnt">0</span>/300</div>
+            </div>
+            <button class="btn btn-rose" id="submit-rating" style="width:100%;justify-content:center;">Submit Rating
+              ★</button>
+            <div class="success-msg" id="rating-ok" role="status">Thank you for your rating! 📚</div>
+          </div>
+        </div>
+        <div class="reveal" style="display:flex;flex-direction:column;gap:1.5rem;">
+          <div class="agg-score" role="status" aria-live="polite">
+            <div class="agg-big" id="agg-score">—</div>
+            <div id="agg-stars" style="font-size:1.3rem;margin:0.25rem 0;color:var(--rose)">☆☆☆☆☆</div>
+            <div class="agg-lbl" id="agg-lbl">No ratings yet — be the first!</div>
+          </div>
+          <div class="bar-chart">
+            <h4>Rating Distribution</h4>
+            <div class="bar-row"><span class="bar-label">★★★★★</span>
+              <div class="bar-wrap">
+                <div class="bar-fill" data-w="68"></div>
+              </div><span class="bar-pct">68%</span>
+            </div>
+            <div class="bar-row"><span class="bar-label">★★★★</span>
+              <div class="bar-wrap">
+                <div class="bar-fill" data-w="22"></div>
+              </div><span class="bar-pct">22%</span>
+            </div>
+            <div class="bar-row"><span class="bar-label">★★★</span>
+              <div class="bar-wrap">
+                <div class="bar-fill" data-w="7"></div>
+              </div><span class="bar-pct">7%</span>
+            </div>
+            <div class="bar-row"><span class="bar-label">★★</span>
+              <div class="bar-wrap">
+                <div class="bar-fill" data-w="2"></div>
+              </div><span class="bar-pct">2%</span>
+            </div>
+            <div class="bar-row"><span class="bar-label">★</span>
+              <div class="bar-wrap">
+                <div class="bar-fill" data-w="1"></div>
+              </div><span class="bar-pct">1%</span>
+            </div>
+          </div>
+          <div>
+            <h4 style="font-family:var(--font-h);font-size:1rem;margin-bottom:0.75rem;color:var(--charcoal)">Recent
+              Feedback</h4>
+            <div class="feedbacks-list" id="feedbacks-list" aria-live="polite">
+              <p style="font-size:0.85rem;color:var(--text-muted);text-align:center;padding:1rem 0">No feedback yet. Be
+                the first to rate!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+     ABOUT
+============================================================ -->
+  <section id="about" aria-labelledby="about-h">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-img-wrap reveal-l">
+          <div class="about-blob" aria-hidden="true"></div>
+          <img src="https://placehold.co/400x400/C9A9A6/2C2C2C?text=PN" alt="PoswalNovel — the face behind the pages"
+            class="about-avatar" loading="lazy" width="260" height="260" />
+        </div>
+        <div class="about-text reveal-r">
+          <p class="eyebrow" style="margin-bottom:0.5rem;">The Story Behind the Page</p>
+          <h2 class="section-title" id="about-h">We Are PoswalNovel</h2>
+          <p>PoswalNovel started in 2026 out of a simple love for books — the kind that keep you up past midnight and
+            leave you staring at the ceiling long after the last page. We're a community-first literary brand dedicated
+            to helping readers across India, Pakistan and the world discover their next favourite novel.</p>
+          <p>We cover Urdu, Hindi and English literature with the same warmth: honest reviews, heartfelt
+            recommendations, and a genuine passion for storytelling. No paid promotions. No biased opinions. Just books,
+            words, and the readers who love them.</p>
+          <ul class="about-list" aria-label="What we stand for">
+            <li><span>📖</span><span>Honest, spoiler-free reviews — always</span></li>
+            <li><span>🌐</span><span>Books across Urdu, Hindi &amp; English</span></li>
+            <li><span>🌏</span><span>Readers from India, Pakistan &amp; worldwide</span></li>
+            <li><span>💛</span><span>Community-first — no paid promotions, ever</span></li>
+          </ul>
+          <div class="social-links">
+            <a href="https://instagram.com/poswalnovel" target="_blank" rel="noopener noreferrer" class="social-link"
+              aria-label="Instagram">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+              </svg>
+              Instagram
+            </a>
+            <a href="https://t.me/poswalnovel" target="_blank" rel="noopener noreferrer" class="social-link"
+              aria-label="Telegram">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+              </svg>
+              Telegram
+            </a>
+            <a href="https://whatsapp.com/channel/0029Vb7KM6c6rsQzSX9zEQ3g" target="_blank" rel="noopener noreferrer"
+              class="social-link" aria-label="WhatsApp Channel">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z" />
+              </svg>
+              WhatsApp
+            </a>
+            <a href="https://www.facebook.com/poswalnovel" target="_blank" rel="noopener noreferrer" class="social-link"
+              aria-label="Facebook">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+              </svg>
+              Facebook
+            </a>
+            <a href="https://www.linkedin.com/company/poswalnovel" target="_blank" rel="noopener noreferrer"
+              class="social-link" aria-label="LinkedIn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+              </svg>
+              LinkedIn
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+     CONTACT
+============================================================ -->
+  <section id="contact" aria-labelledby="contact-h">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-label">— Get In Touch —</p>
+        <h2 class="section-title" id="contact-h">Let's Connect</h2>
+        <p class="section-sub">We reply within 48 hours. Looking forward to hearing from you.</p>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-info reveal-l">
+          <h3>Contact Info</h3>
+          <div class="c-item">
+            <span class="c-icon">📧</span>
+            <div>
+              <a href="mailto:poswalnovel@gmail.com">poswalnovel@gmail.com</a>
+              <div class="c-sub">We typically reply within 48 hours</div>
+            </div>
+          </div>
+          <div class="c-item">
+            <span class="c-icon">📸</span>
+            <div>
+              <a href="https://instagram.com/poswalnovel" target="_blank" rel="noopener noreferrer">@poswalnovel on
+                Instagram</a>
+              <div class="c-sub">DMs open for quick chats</div>
+            </div>
+          </div>
+          <div class="collab-list">
+            <h4>We're Open For</h4>
+            <ul>
+              <li>Author &amp; Publisher Collaborations</li>
+              <li>ARC (Advance Review Copy) Requests</li>
+              <li>Affiliate &amp; Brand Partnerships</li>
+              <li>Reader Suggestions &amp; Recommendations</li>
+            </ul>
+          </div>
+        </div>
+        <!-- Replace YOUR_FORMSPREE_ID with your real ID from formspree.io -->
+        <div class="reveal-r">
+          <form class="contact-form" id="contact-form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST"
+            novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="cf-name">Full Name *</label>
+                <input type="text" class="form-input" id="cf-name" name="name" placeholder="Your name" required />
+                <div class="form-err" id="err-name">Please enter your name.</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="cf-email">Email Address *</label>
+                <input type="email" class="form-input" id="cf-email" name="email" placeholder="you@example.com"
+                  required />
+                <div class="form-err" id="err-email">Please enter a valid email.</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cf-type">Inquiry Type *</label>
+              <select class="form-sel" id="cf-type" name="inquiry_type" required>
+                <option value="">— Select —</option>
+                <option>Book Suggestion</option>
+                <option>ARC Request</option>
+                <option>Collaboration</option>
+                <option>Brand Partnership</option>
+                <option>Other</option>
+              </select>
+              <div class="form-err" id="err-type">Please select an inquiry type.</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cf-subject">Subject *</label>
+              <input type="text" class="form-input" id="cf-subject" name="subject" placeholder="Brief subject"
+                required />
+              <div class="form-err" id="err-subject">Please enter a subject.</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cf-msg">Message *</label>
+              <textarea class="form-ta" id="cf-msg" name="message" rows="5" placeholder="Tell us more..." required
+                style="resize:vertical;"></textarea>
+              <div class="form-err" id="err-msg">Message must be at least 20 characters.</div>
+            </div>
+            <div class="form-group">
+              <div class="cb-wrap">
+                <input type="checkbox" id="cf-agree" name="agree" required />
+                <label for="cf-agree">I agree to be contacted at the email address I've provided.</label>
+              </div>
+              <div class="form-err" id="err-agree">You must agree to be contacted.</div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">Send Message
+              →</button>
+            <div class="alert alert-ok" id="cf-ok" role="status">Thank you! We'll get back to you within 48 hours. 📚
+            </div>
+            <div class="alert alert-err" id="cf-err" role="alert">Something went wrong. Please email us directly.</div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+     FOOTER (always dark)
+============================================================ -->
+  <footer class="footer" aria-label="Site footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <span class="footer-logo">Poswal<span>Novel</span></span>
+          <p class="footer-tagline">Where every page finds its reader.</p>
+          <p class="footer-desc">A literary review brand covering Urdu, Hindi and English novels for readers across
+            India, Pakistan and worldwide. Est. 2026.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Quick Links</h5>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#reviews">Reviews</a></li>
+            <li><a href="#bookshelf">Bookshelf</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Connect</h5>
+          <ul>
+            <li><a href="https://instagram.com/poswalnovel" target="_blank" rel="noopener noreferrer">📸 Instagram</a>
+            </li>
+            <li><a href="https://t.me/poswalnovel" target="_blank" rel="noopener noreferrer">✈️ Telegram</a></li>
+            <li><a href="https://whatsapp.com/channel/0029Vb7KM6c6rsQzSX9zEQ3g" target="_blank"
+                rel="noopener noreferrer">💬 WhatsApp Channel</a></li>
+            <li><a href="https://www.facebook.com/poswalnovel" target="_blank" rel="noopener noreferrer">📘 Facebook</a>
+            </li>
+            <li><a href="https://www.linkedin.com/company/poswalnovel" target="_blank" rel="noopener noreferrer">💼
+                LinkedIn</a></li>
+            <li><a href="mailto:poswalnovel@gmail.com">📧 Email Us</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <hr class="footer-div" />
+    <div class="container">
+      <div class="footer-bottom">
+        <span>© 2026 PoswalNovel. All rights reserved.</span>
+        <span>Made with 📖 for book lovers worldwide.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+     REVIEW MODAL
+============================================================ -->
+  <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-ttl">
+    <div class="modal" id="modal">
+      <div class="modal-hd">
+        <img id="mc-img" src="" alt="" class="modal-cover" loading="lazy" />
+        <div class="modal-meta">
+          <h2 class="modal-title" id="modal-ttl"></h2>
+          <p class="modal-author" id="mc-author"></p>
+          <div class="modal-tags" id="mc-tags"></div>
+          <div class="modal-info-row" id="mc-info"></div>
+        </div>
+        <button class="modal-close" id="modal-close" aria-label="Close modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="star-row" id="mc-stars" style="margin-bottom:1.25rem;"></div>
+        <div class="rating-breakdown" style="margin-bottom:1.5rem;">
+          <h4>Rating Breakdown</h4>
+          <div id="mc-breakdown"></div>
+        </div>
+        <div class="modal-review" id="mc-review"></div>
+        <div class="modal-actions" id="mc-actions"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+     ADMIN PANEL
+============================================================ -->
+  <div class="admin-overlay" id="admin-overlay" role="dialog" aria-modal="true" aria-label="Admin Panel">
+    <div class="admin-panel">
+      <div class="admin-hd">
+        <h2>⚙️ Admin Panel</h2>
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <span>PoswalNovel Content Manager</span>
+          <button onclick="closeAdmin()" class="modal-close" aria-label="Close admin panel">✕</button>
+        </div>
+      </div>
+      <div class="admin-body">
+        <div class="admin-notice">
+          📌 Data is stored in your browser (localStorage). To make it permanent, export the JSON and paste it into the
+          BOOKS array in the HTML file. Admin panel is accessible only when logged in as admin.
+        </div>
+        <div class="admin-tabs">
+          <button class="admin-tab active" data-tab="books">📚 Book Reviews</button>
+          <button class="admin-tab" data-tab="add">➕ Add / Edit Book</button>
+          <button class="admin-tab" data-tab="stats">📊 Edit Stats</button>
+          <button class="admin-tab" data-tab="export">📤 Export Data</button>
+        </div>
+
+        <!-- TAB: Books List -->
+        <div id="tab-books" class="admin-tab-content active">
+          <h3 class="admin-section-title">All Book Reviews</h3>
+          <div id="admin-books-list" class="admin-books-list"></div>
+          <button class="btn btn-rose" onclick="switchAdminTab('add');clearAdminForm()">➕ Add New Book</button>
+        </div>
+
+        <!-- TAB: Add/Edit -->
+        <div id="tab-add" class="admin-tab-content">
+          <h3 class="admin-section-title" id="form-tab-title">Add New Book Review</h3>
+          <input type="hidden" id="edit-id" value="" />
+          <div class="admin-form-grid">
+            <div class="admin-form-group">
+              <label>Title *</label>
+              <input class="admin-input" id="af-title" placeholder="e.g. Peer-e-Kamil" />
+            </div>
+            <div class="admin-form-group">
+              <label>Author *</label>
+              <input class="admin-input" id="af-author" placeholder="e.g. Umera Ahmed" />
+            </div>
+            <div class="admin-form-group">
+              <label>Genre</label>
+              <select class="admin-sel" id="af-genre">
+                <option>Urdu Fiction</option>
+                <option>Hindi Fiction</option>
+                <option>English Fiction</option>
+                <option>Romance</option>
+                <option>Thriller</option>
+                <option>Fantasy</option>
+                <option>Classic</option>
+              </select>
+            </div>
+            <div class="admin-form-group">
+              <label>Language</label>
+              <select class="admin-sel" id="af-lang">
+                <option>Urdu</option>
+                <option>Hindi</option>
+                <option>English</option>
+              </select>
+            </div>
+            <div class="admin-form-group">
+              <label>Cover Image URL</label>
+              <input class="admin-input" id="af-cover" placeholder="https://..." />
+            </div>
+            <div class="admin-form-group">
+              <label>Rating (e.g. 4.5)</label>
+              <input class="admin-input" type="number" id="af-rating" min="1" max="5" step="0.1" placeholder="4.5" />
+            </div>
+            <div class="admin-form-group">
+              <label>Pages</label>
+              <input class="admin-input" type="number" id="af-pages" placeholder="360" />
+            </div>
+            <div class="admin-form-group">
+              <label>Year Published</label>
+              <input class="admin-input" type="number" id="af-year" placeholder="2024" />
+            </div>
+            <div class="admin-form-group">
+              <label>Publisher</label>
+              <input class="admin-input" id="af-pub" placeholder="Publisher name" />
+            </div>
+            <div class="admin-form-group">
+              <label>Price (e.g. ₹499)</label>
+              <input class="admin-input" id="af-price" placeholder="₹499" />
+            </div>
+            <div class="admin-form-group" style="grid-column:1/-1;">
+              <label>Affiliate Link (Amazon/Daraz)</label>
+              <input class="admin-input" id="af-aff" placeholder="https://amzn.in/..." />
+            </div>
+            <div class="admin-form-group" style="grid-column:1/-1;">
+              <label>Review Excerpt (2-3 lines shown on card)</label>
+              <textarea class="admin-ta" id="af-excerpt" rows="2" placeholder="Short teaser..."></textarea>
+            </div>
+            <div class="admin-form-group" style="grid-column:1/-1;">
+              <label>Full Review (long-form, shown in modal)</label>
+              <textarea class="admin-ta" id="af-review" rows="6" placeholder="Full review text here..."></textarea>
+            </div>
+            <div class="admin-form-group" style="grid-column:1/-1;display:flex;align-items:center;gap:0.75rem;">
+              <input type="checkbox" id="af-featured" style="accent-color:var(--rose);width:16px;height:16px;" />
+              <label for="af-featured" style="font-size:0.85rem;font-weight:500;">Mark as Featured Review (shown as hero
+                card)</label>
+            </div>
+          </div>
+          <div style="display:flex;gap:0.75rem;margin-top:1rem;">
+            <button class="btn btn-rose" onclick="saveBook()" style="flex:1;justify-content:center;">💾 Save
+              Book</button>
+            <button class="btn btn-outline" onclick="clearAdminForm()" style="flex:0 0 auto;">Clear</button>
+          </div>
+          <div id="admin-save-msg" class="success-msg" style="margin-top:0.75rem;"></div>
+        </div>
+
+        <!-- TAB: Stats -->
+        <div id="tab-stats" class="admin-tab-content">
+          <h3 class="admin-section-title">Edit Statistics</h3>
+          <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.5rem;">These numbers appear in the dark
+            strip below the hero section.</p>
+          <div class="admin-stats-grid">
+            <div class="admin-form-group">
+              <label>Total Reviews</label>
+              <input class="admin-input" id="st-reviews" placeholder="47+" />
+            </div>
+            <div class="admin-form-group">
+              <label>Instagram Followers</label>
+              <input class="admin-input" id="st-followers" placeholder="12K+" />
+            </div>
+            <div class="admin-form-group">
+              <label>Countries Reading</label>
+              <input class="admin-input" id="st-countries" placeholder="15+" />
+            </div>
+            <div class="admin-form-group">
+              <label>Genres Covered</label>
+              <input class="admin-input" id="st-genres" placeholder="8" />
+            </div>
+            <div class="admin-form-group">
+              <label>Average Rating</label>
+              <input class="admin-input" id="st-avgRating" placeholder="4.2" />
+            </div>
+          </div>
+          <button class="btn btn-rose" onclick="saveStats()" style="justify-content:center;">💾 Save Stats</button>
+          <div id="stats-save-msg" class="success-msg" style="margin-top:0.75rem;"></div>
+        </div>
+
+        <!-- TAB: Export -->
+        <div id="tab-export" class="admin-tab-content">
+          <h3 class="admin-section-title">Export & Import Data</h3>
+          <div class="export-box">
+            <h4>Export Books as JSON</h4>
+            <p>Copy this JSON and paste it as the BOOKS array in your HTML file to make changes permanent on your live
+              site.</p>
+            <button class="btn btn-rose" onclick="exportBooks()">📋 Copy JSON to Clipboard</button>
+            <div id="export-msg" class="success-msg" style="margin-top:0.75rem;"></div>
+          </div>
+          <div class="export-box" style="margin-top:1rem;">
+            <h4>Reset to Default Books</h4>
+            <p>This will remove all your localStorage books and reload the default sample books.</p>
+            <button class="btn btn-outline" onclick="resetBooks()" style="border-color:#dc3545;color:#dc3545;">🔄 Reset
+              to Default</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+  <script>
+    /* =============================================
+       SITE CONFIG — Edit this to customise
+    ============================================= */
+    const SITE_CONFIG = {
+      brandName: "PoswalNovel",
+      instagram: "https://instagram.com/poswalnovel",
+      telegram: "https://t.me/poswalnovel",
+      whatsapp: "https://whatsapp.com/channel/0029Vb7KM6c6rsQzSX9zEQ3g",
+      facebook: "https://www.facebook.com/poswalnovel",
+      linkedin: "https://www.linkedin.com/company/poswalnovel",
+      email: "poswalnovel@gmail.com",
+      formspreeId: "YOUR_FORMSPREE_ID",
+      siteUrl: window.location.href,
+      /* ——— ADMIN CREDENTIALS — Change these before publishing ——— */
+      adminEmail: "poswalnovel@gmail.com",
+      adminPassword: "PoswalAdmin2026",
+      /* ——————————————————————————————————————————————————————————— */
+      stats: {
+        reviews: "47+",
+        followers: "12K+",
+        countries: "15+",
+        genres: "8",
+        avgRating: "4.2"
+      }
+    };
+
+    /* =============================================
+       DEFAULT BOOKS ARRAY
+    ============================================= */
+    const DEFAULT_BOOKS = [
+      {
+        "id": 1,
+        "title": "Peer-e-Kamil",
+        "author": "Umera Ahmed",
+        "genre": "Urdu Fiction",
+        "language": "Urdu",
+        "cover": "https://m.media-amazon.com/images/I/81wsJ8nSYqL._SL1500_.jpg",
+        "rating": 4.8,
+        "ratings": {
+          "writing": 4.8,
+          "plot": 4.8,
+          "characters": 4.8,
+          "emotions": 4.8,
+          "overall": 4.8
+        },
+        "excerpt": "A masterpiece that transcends religion and touches the deepest corners of the human soul. Umera Ahmed has crafted something truly timeless.",
+        "fullReview": "Peer-e-Kamil — The Perfect Mentor — is more than just a novel; it is a spiritual journey disguised as a love story. Umera Ahmed weaves together two worlds: the privileged, rebellious Imama Hashim, and the grounded, faith-driven Salar Sikandar.\n\nWhat sets this novel apart is the author's unapologetic exploration of faith in a modern context. At a time when Urdu fiction rarely dared to be so direct about Islam, Peer-e-Kamil arrived like a quiet storm. It doesn't preach — it shows.\n\nSalar Sikandar is one of the most memorable protagonists in Pakistani literature — a genius hiding his spiritual emptiness beneath layers of arrogance. His arc from disillusionment to faith is told with a precision that few writers can match.\n\nImama's story is one of sacrifice and conviction. Her willingness to lose everything for her beliefs is both heartbreaking and inspiring.\n\nThe prose is elegant, the dialogue sharp, and the pacing builds to a crescendo that lingers long after you've closed the book. If you read one Urdu novel in your life, make it this one.",
+        "affiliateLink": "https://amzn.in/example",
+        "pages": 760,
+        "year": 2004,
+        "publisher": "Al-Faisal Publishers",
+        "price": "₹499",
+        "featured": true
+      },
+      {
+        "id": 2,
+        "title": "Shehr-e-Zaat",
+        "author": "Umera Ahmed",
+        "genre": "Urdu Fiction",
+        "language": "Urdu",
+        "cover": "https://th.bing.com/th/id/R.7a634aa5b0c3ce447fea42b0f9231b9e?rik=9GVLKd9ciVKecQ&riu=http%3a%2f%2fbookowlsbd.com%2fcdn%2fshop%2ffiles%2fFB-IMG_1729147423295.jpg%3fv%3d1729147517&ehk=2x8bixEs6dv%2bGO6WDZqDibsxHQKI0V1TRWDUZ2LPad0%3d&risl=&pid=ImgRaw&r=0",
+        "rating": 4.5,
+        "ratings": {
+          "writing": 4.5,
+          "plot": 4.5,
+          "characters": 4.5,
+          "emotions": 4.5,
+          "overall": 4.5
+        },
+        "excerpt": "A haunting exploration of self-discovery. Falak's journey from vanity to soul-searching spirituality is one of the most honest portrayals in Urdu fiction.",
+        "fullReview": "Shehr-e-Zaat translates to 'The City of the Self' — and the title alone tells you what this novel is about. It follows Falak, a beautiful, pampered young woman who has everything the world can offer, yet finds herself utterly empty.\n\nUmera Ahmed doesn't sugarcoat Falak's flaws. She is vain, selfish and manipulative — traits that many protagonists in romance fiction would never be allowed to possess. Yet the author's genius lies in making Falak's transformation feel earned, not rushed.\n\nThe novel's exploration of the soul's relationship with God is intimate and searingly honest. There are pages that feel like they were lifted directly from someone's private journal of despair.\n\nIf you've ever felt the aching gap between having everything and feeling nothing, Shehr-e-Zaat will speak directly to your heart.",
+        "affiliateLink": "https://amzn.in/example2",
+        "pages": 312,
+        "year": 2009,
+        "publisher": "Al-Faisal Publishers",
+        "price": "₹349",
+        "featured": false
+      },
+      {
+        "id": 3,
+        "title": "The Kite Runner",
+        "author": "Khaled Hosseini",
+        "genre": "English Fiction",
+        "language": "English",
+        "cover": "https://www.bookishelf.com/wp-content/uploads/2020/02/Book-Review-The-Kite-Runner-by-Khaled-Hosseini.jpg",
+        "rating": 4.7,
+        "ratings": {
+          "writing": 4.7,
+          "plot": 4.7,
+          "characters": 4.7,
+          "emotions": 4.7,
+          "overall": 4.7
+        },
+        "excerpt": "Guilt, redemption and the Afghanistan nobody talks about. Hosseini writes with a beauty that is as devastating as it is tender.",
+        "fullReview": "The Kite Runner is one of those rare books that ruins you in the best possible way. Set against the backdrop of Afghanistan's tragic history, Khaled Hosseini tells the deeply personal story of Amir and his servant-friend Hassan.\n\nThe central act of betrayal at the heart of this novel is one of the most devastating in modern literature. And yet the story is ultimately about redemption — about whether we can ever truly atone for our worst moments.\n\nHosseini's prose is accessible without being simple. He has a gift for the precise detail that makes a scene live — the pomegranate tree, the kite strings, the blue sky of Kabul.\n\nA masterpiece of empathy. Essential reading.",
+        "affiliateLink": "https://amzn.in/example3",
+        "pages": 371,
+        "year": 2003,
+        "publisher": "Riverhead Books",
+        "price": "₹299",
+        "featured": false
+      },
+      {
+        "id": 4,
+        "title": "Devdas",
+        "author": "Sarat Chandra Chattopadhyay",
+        "genre": "Classic",
+        "language": "Hindi",
+        "cover": "https://m.media-amazon.com/images/I/61uTZ6dtv4L._SY522_.jpg",
+        "rating": 4.2,
+        "ratings": {
+          "writing": 4.2,
+          "plot": 4.2,
+          "characters": 4.2,
+          "emotions": 4.2,
+          "overall": 4.2
+        },
+        "excerpt": "The original tragic romantic hero. Devdas is a portrait of self-destruction so vivid you want to shake him — and weep for him.",
+        "fullReview": "Published in 1917, Devdas remains one of the most influential works in Bengali and Hindi literature. The story of a privileged young man who destroys himself rather than fight for the woman he loves has inspired countless adaptations.\n\nWhat makes Devdas endure is not the romance — it is the psychological portrait of a man incapable of taking responsibility for his own unhappiness.\n\nParo and Chandramukhi — the two women who love Devdas — are arguably the more interesting characters. Their quiet strength contrasts sharply with his loud destruction. In many ways, this is their story as much as his.",
+        "affiliateLink": "https://amzn.in/example4",
+        "pages": 128,
+        "year": 1917,
+        "publisher": "Penguin Classics",
+        "price": "₹199",
+        "featured": false
+      },
+      {
+        "id": 5,
+        "title": "Man Ke Moti",
+        "author": "Bano Qudsia",
+        "genre": "Urdu Fiction",
+        "language": "Urdu",
+        "cover": "https://placehold.co/300x420/8B6F5E/FAF7F2?text=Man+Ke+Moti",
+        "rating": 4.4,
+        "ratings": {
+          "writing": 4.6,
+          "plot": 4.2,
+          "characters": 4.5,
+          "emotions": 4.6,
+          "overall": 4.4
+        },
+        "excerpt": "Bano Qudsia at her quietest and most profound. Short stories that hold the weight of entire lifetimes in just a few pages.",
+        "fullReview": "Bano Qudsia was one of the most important voices in 20th-century Urdu literature, and Man Ke Moti — Pearls of the Heart — showcases her gift for the short form at its finest.\n\nThese are not stories with dramatic plots or grand revelations. They are quiet observations — moments caught in amber. A grandmother's silence, a daughter's grief, a man's regret at a window.\n\nHer prose is clean, restrained and devastatingly effective. There is no excess here. Every word earns its place. A deeply humanising collection.",
+        "affiliateLink": "https://amzn.in/example5",
+        "pages": 220,
+        "year": 1985,
+        "publisher": "Sang-e-Meel Publications",
+        "price": "₹380",
+        "featured": false
+      },
+      {
+        "id": 6,
+        "title": "The Alchemist",
+        "author": "Paulo Coelho",
+        "genre": "English Fiction",
+        "language": "English",
+        "cover": "https://m.media-amazon.com/images/I/617lxveUjYL._SY522_.jpg",
+        "rating": 4.3,
+        "ratings": {
+          "writing": 4.3,
+          "plot": 4.3,
+          "characters": 4.3,
+          "emotions": 4.3,
+          "overall": 4.3
+        },
+        "excerpt": "Overrated? Perhaps. But deny its effect on a 17-year-old who has never thought about their Personal Legend — and you're lying.",
+        "fullReview": "The Alchemist is the book people love to love and cool people love to dismiss. The truth is somewhere in the middle.\n\nPaulo Coelho's fable about a young shepherd named Santiago who travels from Spain to Egypt in search of treasure is simple almost to the point of being simplistic. The prose is deliberately spare, the philosophy naive.\n\nAnd yet — for readers encountering this book at the right moment, usually between 16 and 22, The Alchemist can be genuinely transformative. Coelho distils something essential about the desire for meaning.\n\nRead it for what it is: a beautifully told fable with a big, earnest heart.",
+        "affiliateLink": "https://amzn.in/example6",
+        "pages": 208,
+        "year": 1988,
+        "publisher": "HarperOne",
+        "price": "₹250",
+        "featured": false
+      },
+      {
+        "id": 7,
+        "title": "Raag Darbari",
+        "author": "Shrilal Shukla",
+        "genre": "Hindi Fiction",
+        "language": "Hindi",
+        "cover": "https://m.media-amazon.com/images/I/51pluT0lPTL.jpg",
+        "rating": 4.6,
+        "ratings": {
+          "writing": 4.6,
+          "plot": 4.6,
+          "characters": 4.6,
+          "emotions": 4.6,
+          "overall": 4.6
+        },
+        "excerpt": "Scathing, hilarious, and profoundly Indian. Raag Darbari is a satirical masterpiece that understands power better than most political textbooks.",
+        "fullReview": "Raag Darbari, winner of the Sahitya Akademi Award in 1969, is one of the great satirical novels of Hindi literature. Set in a fictional village in Uttar Pradesh, it follows Rangnath, a young man from the city who discovers that life in a 'simple' village is anything but.\n\nShrilal Shukla's genius lies in his ability to expose the rot of post-independence Indian bureaucracy through pitch-perfect comedy. Every character is at once ridiculous and recognisable.\n\nFor Hindi readers, this is essential national literature. A genuine classic that grows richer with each rereading.",
+        "affiliateLink": "https://amzn.in/example7",
+        "pages": 367,
+        "year": 1968,
+        "publisher": "Rajkamal Prakashan",
+        "price": "₹320",
+        "featured": false
+      }
+    ]
+
+    /* =============================================
+       STATE
+    ============================================= */
+    let BOOKS = [];
+    let currentGenre = 'All', currentLang = 'All', currentSort = 'latest';
+    let currentShelf = 'All';
+    let selectedRating = 0;
+    let editingBookId = null;
+    let statsConfig = {};
+
+    /* =============================================
+       INIT — load from localStorage or defaults
+    ============================================= */
+    function initBooks() {
+      const stored = localStorage.getItem('pn_books');
+      BOOKS = stored ? JSON.parse(stored) : [...DEFAULT_BOOKS];
+    }
+
+    function initStats() {
+      const stored = localStorage.getItem('pn_stats');
+      statsConfig = stored ? JSON.parse(stored) : { ...SITE_CONFIG.stats };
+    }
+
+    function saveBooks() {
+      localStorage.setItem('pn_books', JSON.stringify(BOOKS));
+    }
+
+    /* =============================================
+       THEME TOGGLE
+    ============================================= */
+    const html = document.documentElement;
+    const themeBtn = document.getElementById('theme-toggle');
+
+    function getSystemDark() {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        html.setAttribute('data-theme', 'dark');
+        document.body.classList.remove('sys-dark');
+      } else if (theme === 'light') {
+        html.setAttribute('data-theme', 'light');
+        document.body.classList.remove('sys-dark');
+      } else {
+        html.setAttribute('data-theme', 'auto');
+        document.body.classList.toggle('sys-dark', getSystemDark());
+      }
+      localStorage.setItem('pn_theme', theme);
+      themeBtn.setAttribute('aria-label', theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode');
+      themeBtn.setAttribute('title', theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode');
+    }
+
+    // Load saved theme or detect system
+    const savedTheme = localStorage.getItem('pn_theme') || 'auto';
+    applyTheme(savedTheme);
+
+    themeBtn.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      const sysDark = getSystemDark();
+      const effectiveDark = current === 'dark' || (current === 'auto' && sysDark);
+      applyTheme(effectiveDark ? 'light' : 'dark');
+    });
+
+    // Listen for system changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      if (html.getAttribute('data-theme') === 'auto') {
+        document.body.classList.toggle('sys-dark', e.matches);
+      }
+    });
+
+    /* =============================================
+       HAMBURGER MENU
+    ============================================= */
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', open);
+    });
+
+    /* =============================================
+       NAVBAR SCROLL SHADOW
+    ============================================= */
+    window.addEventListener('scroll', () => {
+      document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 50);
+    }, { passive: true });
+
+    /* =============================================
+       SCROLL REVEAL
+    ============================================= */
+    const ro = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('vis'); ro.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+
+    function initReveal() {
+      document.querySelectorAll('.reveal, .reveal-l, .reveal-r').forEach(el => ro.observe(el));
+    }
+
+    /* =============================================
+       ACTIVE NAV
+    ============================================= */
+    const secObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          document.querySelectorAll('.nav-links a').forEach(a => { a.classList.remove('active'); a.removeAttribute('aria-current'); });
+          const a = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+          if (a) { a.classList.add('active'); a.setAttribute('aria-current', 'page'); }
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    document.querySelectorAll('section[id]').forEach(s => secObserver.observe(s));
+
+    /* =============================================
+       STATS COUNT-UP
+    ============================================= */
+    let statsAnimated = false;
+    new IntersectionObserver((entries) => {
+      if (!entries[0].isIntersecting || statsAnimated) return;
+      statsAnimated = true;
+      document.querySelectorAll('.stat-num').forEach(el => {
+        const key = el.dataset.key;
+        const val = String(statsConfig[key] || SITE_CONFIG.stats[key] || '0');
+        el.textContent = val;
+        const m = val.match(/[\d.]+/);
+        if (!m) return;
+        const target = parseFloat(m[0]);
+        const suffix = val.replace(m[0], '');
+        const dec = val.includes('.');
+        const start = performance.now();
+        const dur = 1200;
+        function tick(now) {
+          const p = Math.min((now - start) / dur, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = (dec ? (eased * target).toFixed(1) : Math.floor(eased * target)) + suffix;
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.5 }).observe(document.querySelector('.stats-strip'));
+
+    /* =============================================
+       STARS UTILITY
+    ============================================= */
+    function starsHTML(r, size = '1rem', dark = false) {
+      const full = Math.floor(r), half = r % 1 >= 0.5, empty = 5 - full - (half ? 1 : 0);
+      const emptyColor = dark ? 'rgba(245,240,232,0.2)' : 'var(--cream-dark)';
+      return `<span style="color:var(--rose);font-size:${size};">${'★'.repeat(full)}${half ? '½' : ''}<span style="color:${emptyColor};">${'☆'.repeat(empty)}</span></span>`;
+    }
+
+    /* =============================================
+       SHARE DROPDOWN
+    ============================================= */
+    function shareDropHTML(id, title, btnClass = 'btn-outline') {
+      return `
+      <div class="share-wrap">
+        <button class="btn ${btnClass}" onclick="toggleShare(event,'sd-${id}')" aria-haspopup="true" aria-expanded="false" aria-label="Share ${title}">🔗 Share</button>
+        <div class="share-drop" id="sd-${id}" role="menu">
+          <a href="https://wa.me/?text=${encodeURIComponent('📚 Check out this review: ' + title + ' — ' + location.href)}" target="_blank" rel="noopener noreferrer" role="menuitem">📱 WhatsApp</a>
+          <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(location.href)}&quote=${encodeURIComponent('Just read this review of ' + title + ' on PoswalNovel!')}" target="_blank" rel="noopener noreferrer" role="menuitem">📘 Facebook</a>
+          <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent('📚 Just read this review of "' + title + '" on PoswalNovel! ' + location.href + ' #BookReview #PoswalNovel')}" target="_blank" rel="noopener noreferrer" role="menuitem">🐦 Twitter / X</a>
+          <a href="https://t.me/share/url?url=${encodeURIComponent(location.href)}&text=${encodeURIComponent('📚 Book review: ' + title + ' on PoswalNovel')}" target="_blank" rel="noopener noreferrer" role="menuitem">✈️ Telegram</a>
+          <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(location.href)}" target="_blank" rel="noopener noreferrer" role="menuitem">💼 LinkedIn</a>
+          <button onclick="copyLink('${id}')" role="menuitem">📋 Copy Link</button>
+        </div>
+      </div>`;
+    }
+
+    function toggleShare(e, id) {
+      e.stopPropagation();
+      document.querySelectorAll('.share-drop').forEach(d => { if (d.id !== id) d.classList.remove('open'); });
+      const drop = document.getElementById(id);
+      const btn = e.currentTarget;
+      drop.classList.toggle('open');
+      btn.setAttribute('aria-expanded', drop.classList.contains('open'));
+    }
+
+    function copyLink(id) {
+      navigator.clipboard.writeText(location.href).then(() => {
+        const btn = document.querySelector(`#sd-${id} button`);
+        if (btn) { const orig = btn.textContent; btn.textContent = '✅ Copied!'; setTimeout(() => btn.textContent = orig, 2000); }
+      });
+    }
+
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.share-wrap')) {
+        document.querySelectorAll('.share-drop').forEach(d => d.classList.remove('open'));
+      }
+    });
+
+    /* =============================================
+       RENDER FEATURED
+    ============================================= */
+    function renderFeatured() {
+      const book = BOOKS.find(b => b.featured);
+      const c = document.getElementById('featured-container');
+      if (!book || !c) { c && (c.innerHTML = ''); return; }
+      c.innerHTML = `
+      <div class="feat-card reveal" role="article" aria-label="Review of the Month: ${book.title}">
+        <div class="feat-cover">
+          <img src="${book.cover}" alt="Cover of ${book.title}" loading="lazy" width="240" height="340" />
+        </div>
+        <div class="feat-body">
+          <div class="feat-badge">⭐ Review of the Month</div>
+          <h3 class="feat-title">${book.title}</h3>
+          <p class="feat-author">by ${book.author} · ${book.genre}</p>
+          <div class="star-row">${starsHTML(book.rating, '1rem', true)} <span class="rating-num">${book.rating}/5</span></div>
+          <p class="feat-excerpt">${book.excerpt}</p>
+          <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+            <button class="btn btn-rose" onclick="openModal(${book.id})">Read Full Review</button>
+            <a href="${book.affiliateLink}" target="_blank" rel="noopener noreferrer" class="btn btn-outline" aria-label="Buy ${book.title}">🛒 Buy Now</a>
+            ${shareDropHTML('feat-' + book.id, book.title, 'btn-outline')}
+          </div>
+        </div>
+      </div>`;
+    }
+
+    /* =============================================
+       RENDER GRID
+    ============================================= */
+    function renderGrid() {
+      const grid = document.getElementById('books-grid');
+      let filtered = BOOKS.filter(b => {
+        return (currentGenre === 'All' || b.genre === currentGenre) && (currentLang === 'All' || b.language === currentLang);
+      });
+      if (currentSort === 'highest') filtered = [...filtered].sort((a, b) => b.rating - a.rating);
+      if (!filtered.length) {
+        grid.innerHTML = `<div class="no-results"><span style="font-size:3rem;display:block;margin-bottom:0.75rem;">📚</span>No reviews match these filters yet.</div>`;
+        return;
+      }
+      grid.innerHTML = filtered.map(b => `
+      <article class="book-card reveal" role="listitem">
+        <div class="card-img">
+          <img src="${b.cover}" alt="Cover of ${b.title}" loading="lazy" width="280" height="280" />
+          <span class="badge badge-genre">${b.genre}</span>
+          <span class="badge badge-lang">${b.language}</span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">${b.title}</h3>
+          <p class="card-author">by ${b.author}</p>
+          <div class="card-stars">${starsHTML(b.rating, '0.9rem')} <span style="color:var(--text-muted);font-size:0.8rem;margin-left:0.3rem;">${b.rating}/5</span></div>
+          <p class="card-excerpt">${b.excerpt}</p>
+          <div class="card-actions">
+            <button class="btn btn-outline" onclick="openModal(${b.id})">Read Review</button>
+            <a href="${b.affiliateLink}" target="_blank" rel="noopener noreferrer" class="btn btn-rose">🛒 Buy</a>
+            ${shareDropHTML(b.id, b.title)}
+          </div>
+        </div>
+      </article>`).join('');
+      initReveal();
+    }
+
+    /* Filter */
+    document.querySelectorAll('.genre-pills .pill').forEach(p => {
+      p.addEventListener('click', () => {
+        document.querySelectorAll('.genre-pills .pill').forEach(x => { x.classList.remove('active'); x.setAttribute('aria-pressed', 'false'); });
+        p.classList.add('active'); p.setAttribute('aria-pressed', 'true');
+        currentGenre = p.dataset.genre; renderGrid();
+      });
+    });
+    document.getElementById('lang-filter').addEventListener('change', e => { currentLang = e.target.value; renderGrid(); });
+    document.getElementById('sort-filter').addEventListener('change', e => { currentSort = e.target.value; renderGrid(); });
+
+    /* =============================================
+       MODAL
+    ============================================= */
+    function openModal(id) {
+      const b = BOOKS.find(x => x.id === id);
+      if (!b) return;
+      document.getElementById('mc-img').src = b.cover;
+      document.getElementById('mc-img').alt = `Cover of ${b.title}`;
+      document.getElementById('modal-ttl').textContent = b.title;
+      document.getElementById('mc-author').textContent = `by ${b.author}`;
+      document.getElementById('mc-tags').innerHTML = `<span class="modal-tag">${b.genre}</span><span class="modal-tag">${b.language}</span>${b.year ? `<span class="modal-tag">${b.year}</span>` : ''}`;
+      document.getElementById('mc-info').innerHTML = `<span>${b.pages} pages</span>${b.publisher ? `<span>${b.publisher}</span>` : ''}`;
+      document.getElementById('mc-stars').innerHTML = starsHTML(b.rating, '1.1rem') + `<span style="color:var(--text-muted);font-size:0.85rem;margin-left:0.5rem;">${b.rating}/5</span>`;
+      const labels = { writing: 'Writing Style', plot: 'Plot', characters: 'Characters', emotions: 'Emotional Impact', overall: 'Overall' };
+      document.getElementById('mc-breakdown').innerHTML = Object.entries(labels).map(([k, lbl]) => `
+      <div class="rating-row">
+        <span class="rr-label">${lbl}</span>
+        <div class="rr-bar"><div class="rr-fill" style="width:${(b.ratings[k] / 5) * 100}%"></div></div>
+        <span class="rr-val">${b.ratings[k]}</span>
+      </div>`).join('');
+      document.getElementById('mc-review').innerHTML = b.fullReview.split('\n\n').map(p => `<p>${p}</p>`).join('');
+      document.getElementById('mc-actions').innerHTML = `
+      <a href="${b.affiliateLink}" target="_blank" rel="noopener noreferrer" class="btn btn-rose" style="flex:1;justify-content:center;">🛒 Buy Now</a>
+      ${shareDropHTML('modal-' + b.id, b.title, 'btn-outline')}`;
+      const ov = document.getElementById('modal-overlay');
+      ov.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      document.getElementById('modal-close').focus();
+    }
+
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('modal-close').addEventListener('click', closeModal);
+    document.getElementById('modal-overlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeAdmin(); } });
+
+    /* =============================================
+       BOOKSHELF
+    ============================================= */
+    function renderShelf() {
+      const grid = document.getElementById('shelf-grid');
+      const filtered = BOOKS.filter(b => {
+        if (currentShelf === 'All') return true;
+        if (currentShelf === 'under300') return parseInt((b.price || '₹999').replace(/[^0-9]/g, '')) < 300;
+        return b.language === currentShelf;
+      });
+      grid.innerHTML = filtered.map(b => `
+      <div class="shelf-item reveal">
+        <div class="shelf-img"><img src="${b.cover}" alt="Cover of ${b.title}" loading="lazy" width="190" height="220" /></div>
+        <div class="shelf-body">
+          <div class="shelf-title">${b.title}</div>
+          <div class="shelf-auth">by ${b.author}</div>
+          <div class="shelf-price">${b.price || '—'}</div>
+          <a href="${b.affiliateLink}" target="_blank" rel="noopener noreferrer" class="btn btn-rose">🛒 Buy Now</a>
+        </div>
+      </div>`).join('');
+      initReveal();
+    }
+
+    document.querySelectorAll('.shelf-filter .pill').forEach(p => {
+      p.addEventListener('click', () => {
+        document.querySelectorAll('.shelf-filter .pill').forEach(x => { x.classList.remove('active'); x.setAttribute('aria-pressed', 'false'); });
+        p.classList.add('active'); p.setAttribute('aria-pressed', 'true');
+        currentShelf = p.dataset.shelf; renderShelf();
+      });
+    });
+
+    /* =============================================
+       FEEDBACK / RATINGS
+    ============================================= */
+    function loadRatings() { return JSON.parse(localStorage.getItem('pn_ratings') || '[]'); }
+    function saveRatings(r) { localStorage.setItem('pn_ratings', JSON.stringify(r)); }
+
+    function updateAgg() {
+      const ratings = loadRatings();
+      const a = document.getElementById('agg-score'), s = document.getElementById('agg-stars'), l = document.getElementById('agg-lbl');
+      if (!ratings.length) { a.textContent = '—'; s.textContent = '☆☆☆☆☆'; l.textContent = 'No ratings yet — be the first!'; return; }
+      const avg = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
+      a.textContent = avg.toFixed(1);
+      s.innerHTML = starsHTML(avg, '1.3rem');
+      l.textContent = `Our readers rate us ${avg.toFixed(1)} / 5 based on ${ratings.length} rating${ratings.length !== 1 ? 's' : ''}`;
+    }
+
+    function updateFbList() {
+      const list = document.getElementById('feedbacks-list');
+      const ratings = loadRatings();
+      if (!ratings.length) { list.innerHTML = '<p style="font-size:0.85rem;color:var(--text-muted);text-align:center;padding:1rem 0">No feedback yet. Be the first to rate!</p>'; return; }
+      list.innerHTML = [...ratings].reverse().slice(0, 5).map(r => `
+      <div class="fb-item">
+        <div class="fb-top"><span class="fb-name">${r.name || 'Anonymous Reader'}</span><span class="fb-date">${new Date(r.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span></div>
+        <div class="fb-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+        ${r.book ? `<div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.25rem;">Re: ${r.book}</div>` : ''}
+        ${r.comment ? `<div class="fb-comment">${r.comment}</div>` : ''}
+      </div>`).join('');
+    }
+
+    // Populate book select
+    const revSel = document.getElementById('rev-sel');
+    function populateRevSel() {
+      const opts = BOOKS.map(b => `<option value="${b.id}">${b.title}</option>`).join('');
+      revSel.innerHTML = '<option value="">— Select a book —</option>' + opts;
+    }
+
+    // Star widget
+    const starBtns = document.querySelectorAll('.star-btn');
+    starBtns.forEach(btn => {
+      btn.addEventListener('mouseenter', () => { const r = parseInt(btn.dataset.r); starBtns.forEach(b => b.classList.toggle('active', parseInt(b.dataset.r) <= r)); });
+      btn.addEventListener('mouseleave', () => { starBtns.forEach(b => b.classList.toggle('active', parseInt(b.dataset.r) <= selectedRating)); });
+      btn.addEventListener('click', () => { selectedRating = parseInt(btn.dataset.r); starBtns.forEach(b => b.classList.toggle('active', parseInt(b.dataset.r) <= selectedRating)); });
+    });
+
+    const fbComment = document.getElementById('fb-comment');
+    const charCntEl = document.getElementById('char-cnt');
+    fbComment.addEventListener('input', () => { charCntEl.textContent = fbComment.value.length; });
+
+    document.getElementById('submit-rating').addEventListener('click', () => {
+      if (!selectedRating) { alert('Please select a star rating first!'); return; }
+      const bookId = parseInt(revSel.value);
+      const book = BOOKS.find(b => b.id === bookId);
+      const ratings = loadRatings();
+      ratings.push({ rating: selectedRating, name: document.getElementById('fb-name').value.trim(), comment: fbComment.value.trim(), book: book ? book.title : '', date: new Date().toISOString() });
+      saveRatings(ratings);
+      updateAgg(); updateFbList();
+      document.getElementById('rating-ok').classList.add('show');
+      selectedRating = 0; starBtns.forEach(b => b.classList.remove('active'));
+      document.getElementById('fb-name').value = ''; fbComment.value = ''; charCntEl.textContent = '0'; revSel.value = '';
+      setTimeout(() => document.getElementById('rating-ok').classList.remove('show'), 4000);
+    });
+
+    // Bar chart animation
+    new IntersectionObserver((entries) => {
+      if (!entries[0].isIntersecting) return;
+      document.querySelectorAll('.bar-fill').forEach(b => { b.style.width = b.dataset.w + '%'; });
+    }, { threshold: 0.3 }).observe(document.querySelector('.bar-chart'));
+
+    /* =============================================
+       CONTACT FORM
+    ============================================= */
+    function validEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+    function showErr(id, show) { const el = document.getElementById(id); if (el) el.classList.toggle('show', show); }
+    function setValid(el, ok) { el.classList.toggle('invalid', !ok); el.classList.toggle('valid', ok); }
+
+    document.getElementById('contact-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const n = document.getElementById('cf-name'), em = document.getElementById('cf-email'),
+        t = document.getElementById('cf-type'), s = document.getElementById('cf-subject'),
+        m = document.getElementById('cf-msg'), a = document.getElementById('cf-agree');
+      const ok = { n: n.value.trim().length >= 2, em: validEmail(em.value), t: t.value !== '', s: s.value.trim().length >= 2, m: m.value.trim().length >= 20, a: a.checked };
+      setValid(n, ok.n); showErr('err-name', !ok.n);
+      setValid(em, ok.em); showErr('err-email', !ok.em);
+      setValid(t, ok.t); showErr('err-type', !ok.t);
+      setValid(s, ok.s); showErr('err-subject', !ok.s);
+      setValid(m, ok.m); showErr('err-msg', !ok.m);
+      showErr('err-agree', !ok.a);
+      if (!Object.values(ok).every(Boolean)) return;
+      const btn = this.querySelector('button[type=submit]');
+      btn.disabled = true; btn.textContent = 'Sending…';
+      try {
+        const r = await fetch(this.action, { method: 'POST', body: new FormData(this), headers: { 'Accept': 'application/json' } });
+        if (r.ok) { document.getElementById('cf-ok').classList.add('show'); document.getElementById('cf-err').classList.remove('show'); this.reset();[n, em, t, s, m].forEach(x => x.classList.remove('valid', 'invalid')); }
+        else throw new Error();
+      } catch { document.getElementById('cf-err').classList.add('show'); document.getElementById('cf-ok').classList.remove('show'); }
+      finally { btn.disabled = false; btn.textContent = 'Send Message →'; }
+    });
+
+    /* =============================================
+       AUTH SYSTEM
+    ============================================= */
+    // Simple hash for password storage (not cryptographic, but better than plaintext in localStorage)
+    function simpleHash(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; }
+      return hash.toString(36);
+    }
+
+    function getUsers() { return JSON.parse(localStorage.getItem('pn_users') || '[]'); }
+    function saveUsers(u) { localStorage.setItem('pn_users', JSON.stringify(u)); }
+    function getCurrentUser() { return JSON.parse(sessionStorage.getItem('pn_session') || 'null'); }
+    function setCurrentUser(u) { sessionStorage.setItem('pn_session', JSON.stringify(u)); }
+
+    function isAdmin() {
+      const u = getCurrentUser();
+      return u && u.isAdmin === true;
+    }
+
+    function updateNavAuth() {
+      const u = getCurrentUser();
+      const loginBtn = document.getElementById('nav-login-btn');
+      const dropdown = document.getElementById('nav-user-dropdown');
+      const userBtn = document.getElementById('nav-user-btn');
+      const avatarEl = document.getElementById('nav-avatar');
+      const nameEl = document.getElementById('nav-username');
+      const adminBtn = document.getElementById('drop-admin-btn');
+      const adminDiv = document.getElementById('drop-admin-divider');
+      if (u) {
+        loginBtn.style.display = 'none';
+        dropdown.style.display = 'block';
+        avatarEl.textContent = (u.name || u.email).charAt(0).toUpperCase();
+        nameEl.textContent = u.name ? u.name.split(' ')[0] : u.email.split('@')[0];
+        if (isAdmin()) {
+          adminBtn.style.display = 'flex';
+          adminDiv.style.display = 'block';
+        } else {
+          adminBtn.style.display = 'none';
+          adminDiv.style.display = 'none';
+        }
+      } else {
+        loginBtn.style.display = '';
+        dropdown.style.display = 'none';
+      }
+    }
+
+    function openAuth(tab) {
+      document.getElementById('auth-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      if (tab) switchAuthTab(tab);
+    }
+    function closeAuth() {
+      document.getElementById('auth-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+      document.getElementById('login-err').classList.remove('show');
+      document.getElementById('register-err').classList.remove('show');
+    }
+
+    function switchAuthTab(tab) {
+      document.querySelectorAll('.auth-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.authTab === tab));
+      document.querySelectorAll('.auth-tab-content').forEach(c => c.classList.toggle('active', c.id === 'auth-tab-' + tab));
+    }
+
+    function fillAdminHint() {
+      document.getElementById('li-email').value = SITE_CONFIG.adminEmail;
+      document.getElementById('li-pass').value = '';
+      document.getElementById('li-pass').focus();
+      document.getElementById('li-pass').placeholder = 'Enter admin password';
+    }
+
+    document.querySelectorAll('.auth-tab-btn').forEach(b => {
+      b.addEventListener('click', () => switchAuthTab(b.dataset.authTab));
+    });
+    document.getElementById('auth-close').addEventListener('click', closeAuth);
+    document.getElementById('auth-overlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeAuth(); });
+
+    // LOGIN
+    document.getElementById('btn-login').addEventListener('click', () => {
+      const email = document.getElementById('li-email').value.trim().toLowerCase();
+      const pass = document.getElementById('li-pass').value;
+      const errEl = document.getElementById('login-err');
+      errEl.classList.remove('show');
+      if (!email || !pass) { errEl.textContent = 'Please enter email and password.'; errEl.classList.add('show'); return; }
+
+      // Check admin credentials first
+      if (email === SITE_CONFIG.adminEmail.toLowerCase() && pass === SITE_CONFIG.adminPassword) {
+        setCurrentUser({ email, name: 'Admin', isAdmin: true });
+        updateNavAuth(); closeAuth();
+        return;
+      }
+      // Check registered users
+      const users = getUsers();
+      const user = users.find(u => u.email === email && u.passHash === simpleHash(pass));
+      if (user) {
+        setCurrentUser({ email: user.email, name: user.name, phone: user.phone, isAdmin: false });
+        updateNavAuth(); closeAuth();
+      } else {
+        errEl.textContent = 'Invalid email or password. Please try again.';
+        errEl.classList.add('show');
+      }
+    });
+
+    // REGISTER
+    document.getElementById('btn-register').addEventListener('click', () => {
+      const name = document.getElementById('rg-name').value.trim();
+      const email = document.getElementById('rg-email').value.trim().toLowerCase();
+      const phone = document.getElementById('rg-phone').value.trim();
+      const pass = document.getElementById('rg-pass').value;
+      const errEl = document.getElementById('register-err');
+      const okEl = document.getElementById('register-ok');
+      errEl.classList.remove('show'); okEl.classList.remove('show');
+      if (!name) { errEl.textContent = 'Please enter your full name.'; errEl.classList.add('show'); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Please enter a valid email address.'; errEl.classList.add('show'); return; }
+      if (pass.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; errEl.classList.add('show'); return; }
+      const users = getUsers();
+      if (users.find(u => u.email === email)) { errEl.textContent = 'An account with this email already exists. Please login.'; errEl.classList.add('show'); return; }
+      // Prevent registering with admin email
+      if (email === SITE_CONFIG.adminEmail.toLowerCase()) { errEl.textContent = 'This email is reserved. Please use a different email.'; errEl.classList.add('show'); return; }
+      users.push({ email, name, phone, passHash: simpleHash(pass) });
+      saveUsers(users);
+      setCurrentUser({ email, name, phone, isAdmin: false });
+      okEl.classList.add('show');
+      setTimeout(() => { updateNavAuth(); closeAuth(); }, 1500);
+    });
+
+    // Enter key support for login
+    ['li-email', 'li-pass'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('btn-login').click(); });
+    });
+
+    // User dropdown toggle
+    document.getElementById('nav-user-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const menu = document.getElementById('user-drop-menu');
+      menu.classList.toggle('open');
+      document.getElementById('nav-user-btn').setAttribute('aria-expanded', menu.classList.contains('open'));
+    });
+    document.addEventListener('click', () => {
+      document.getElementById('user-drop-menu').classList.remove('open');
+      const btn = document.getElementById('nav-user-btn');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    });
+
+    function logoutUser() {
+      sessionStorage.removeItem('pn_session');
+      updateNavAuth();
+      document.getElementById('user-drop-menu').classList.remove('open');
+    }
+
+    function openAdmin() {
+      if (!isAdmin()) { openAuth('login'); return; }
+      renderAdminBooks();
+      loadStatsFields();
+      document.getElementById('admin-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeAdmin() {
+      document.getElementById('admin-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // Admin tabs
+    document.querySelectorAll('.admin-tab').forEach(tab => {
+      tab.addEventListener('click', () => switchAdminTab(tab.dataset.tab));
+    });
+
+    function switchAdminTab(id) {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+      document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.toggle('active', c.id === 'tab-' + id));
+    }
+
+    function renderAdminBooks() {
+      const list = document.getElementById('admin-books-list');
+      list.innerHTML = BOOKS.map(b => `
+      <div class="admin-book-item">
+        <img src="${b.cover}" alt="${b.title}" class="admin-book-img" />
+        <div class="admin-book-info">
+          <strong>${b.title} ${b.featured ? '⭐' : ''}</strong>
+          <span>${b.author} · ${b.genre} · ${b.language} · ${b.rating}/5</span>
+        </div>
+        <div class="admin-book-actions">
+          <button class="btn-sm btn-edit" onclick="editBook(${b.id})">✏️ Edit</button>
+          <button class="btn-sm btn-delete" onclick="deleteBook(${b.id})">🗑️ Delete</button>
+        </div>
+      </div>`).join('');
+    }
+
+    function editBook(id) {
+      const b = BOOKS.find(x => x.id === id);
+      if (!b) return;
+      editingBookId = id;
+      document.getElementById('edit-id').value = id;
+      document.getElementById('form-tab-title').textContent = 'Edit Book Review';
+      document.getElementById('af-title').value = b.title;
+      document.getElementById('af-author').value = b.author;
+      document.getElementById('af-genre').value = b.genre;
+      document.getElementById('af-lang').value = b.language;
+      document.getElementById('af-cover').value = b.cover;
+      document.getElementById('af-rating').value = b.rating;
+      document.getElementById('af-pages').value = b.pages || '';
+      document.getElementById('af-year').value = b.year || '';
+      document.getElementById('af-pub').value = b.publisher || '';
+      document.getElementById('af-price').value = b.price || '';
+      document.getElementById('af-aff').value = b.affiliateLink || '';
+      document.getElementById('af-excerpt').value = b.excerpt || '';
+      document.getElementById('af-review').value = b.fullReview || '';
+      document.getElementById('af-featured').checked = !!b.featured;
+      switchAdminTab('add');
+    }
+
+    function clearAdminForm() {
+      editingBookId = null;
+      document.getElementById('edit-id').value = '';
+      document.getElementById('form-tab-title').textContent = 'Add New Book Review';
+      ['af-title', 'af-author', 'af-cover', 'af-rating', 'af-pages', 'af-year', 'af-pub', 'af-price', 'af-aff', 'af-excerpt', 'af-review'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+      document.getElementById('af-featured').checked = false;
+    }
+
+    function saveBook() {
+      const title = document.getElementById('af-title').value.trim();
+      const author = document.getElementById('af-author').value.trim();
+      if (!title || !author) { alert('Title and Author are required!'); return; }
+      const featured = document.getElementById('af-featured').checked;
+      if (featured) BOOKS = BOOKS.map(b => ({ ...b, featured: false }));
+      const rating = parseFloat(document.getElementById('af-rating').value) || 4.0;
+      const bookData = {
+        id: editingBookId || Date.now(),
+        title, author,
+        genre: document.getElementById('af-genre').value,
+        language: document.getElementById('af-lang').value,
+        cover: document.getElementById('af-cover').value || `https://placehold.co/300x420/C9A9A6/2C2C2C?text=${encodeURIComponent(title)}`,
+        rating,
+        ratings: { writing: rating, plot: rating, characters: rating, emotions: rating, overall: rating },
+        excerpt: document.getElementById('af-excerpt').value.trim() || 'Review excerpt not added yet.',
+        fullReview: document.getElementById('af-review').value.trim() || 'Full review coming soon.',
+        affiliateLink: document.getElementById('af-aff').value.trim() || '#',
+        pages: parseInt(document.getElementById('af-pages').value) || null,
+        year: parseInt(document.getElementById('af-year').value) || null,
+        publisher: document.getElementById('af-pub').value.trim() || null,
+        price: document.getElementById('af-price').value.trim() || null,
+        featured
+      };
+      if (editingBookId) {
+        BOOKS = BOOKS.map(b => b.id === editingBookId ? bookData : b);
+      } else {
+        BOOKS.push(bookData);
+      }
+      saveBooks();
+      refreshAll();
+      renderAdminBooks();
+      const msg = document.getElementById('admin-save-msg');
+      msg.textContent = editingBookId ? '✅ Book updated successfully!' : '✅ New book added successfully!';
+      msg.classList.add('show');
+      setTimeout(() => msg.classList.remove('show'), 3000);
+      clearAdminForm();
+    }
+
+    function deleteBook(id) {
+      const b = BOOKS.find(x => x.id === id);
+      if (!confirm(`Delete "${b?.title}"? This cannot be undone.`)) return;
+      BOOKS = BOOKS.filter(x => x.id !== id);
+      saveBooks(); refreshAll(); renderAdminBooks();
+    }
+
+    function loadStatsFields() {
+      Object.keys(statsConfig).forEach(k => {
+        const el = document.getElementById('st-' + k);
+        if (el) el.value = statsConfig[k];
+      });
+    }
+
+    function saveStats() {
+      ['reviews', 'followers', 'countries', 'genres', 'avgRating'].forEach(k => {
+        const el = document.getElementById('st-' + k);
+        if (el && el.value.trim()) statsConfig[k] = el.value.trim();
+      });
+      localStorage.setItem('pn_stats', JSON.stringify(statsConfig));
+      document.querySelectorAll('.stat-num').forEach(el => {
+        const key = el.dataset.key;
+        if (statsConfig[key]) el.textContent = statsConfig[key];
+      });
+      statsAnimated = false; // Reset so it animates again on re-scroll
+      const msg = document.getElementById('stats-save-msg');
+      msg.textContent = '✅ Stats updated! Scroll to the stats section to see changes.';
+      msg.classList.add('show');
+      setTimeout(() => msg.classList.remove('show'), 3500);
+    }
+
+    function exportBooks() {
+      const json = JSON.stringify(BOOKS, null, 2);
+      navigator.clipboard.writeText(json).then(() => {
+        const msg = document.getElementById('export-msg');
+        msg.textContent = '✅ JSON copied to clipboard! Paste it into the DEFAULT_BOOKS array in your HTML file.';
+        msg.classList.add('show');
+        setTimeout(() => msg.classList.remove('show'), 4000);
+      }).catch(() => {
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'poswalnovel-books.json'; a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    function resetBooks() {
+      if (!confirm('Reset all books to default? Your custom books will be deleted.')) return;
+      localStorage.removeItem('pn_books');
+      BOOKS = [...DEFAULT_BOOKS];
+      refreshAll(); renderAdminBooks();
+      alert('Reset done! Default books restored.');
+    }
+
+    function refreshAll() {
+      populateRevSel();
+      renderFeatured();
+      renderGrid();
+      renderShelf();
+    }
+
+    /* =============================================
+       INIT ALL
+    ============================================= */
+    initBooks();
+    initStats();
+    refreshAll();
+    updateAgg();
+    updateFbList();
+    initReveal();
+    updateNavAuth(); // Restore login state from session
+  </script>
+</body>
+
+</html>
